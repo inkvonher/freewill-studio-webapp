@@ -1,12 +1,20 @@
 import { ArrowRight, Eye, MessageSquare, MousePointerClick, RefreshCcw, TrendingUp } from 'lucide-react';
 import { motion } from 'framer-motion';
+import AnimatedHeading from './components/AnimatedHeading.jsx';
 import ContactForm from './components/ContactForm.jsx';
+import FloatingWhatsApp from './components/FloatingWhatsApp.jsx';
 import Footer from './components/Footer.jsx';
 import GlobalPacman from './components/GlobalPacman.jsx';
 import Hero from './components/Hero.jsx';
+import Magnetic from './components/Magnetic.jsx';
+import Navbar from './components/Navbar.jsx';
+import PrivacyNotice from './components/PrivacyNotice.jsx';
 import Process from './components/Process.jsx';
 import Projects from './components/Projects.jsx';
+import ScrollProgress from './components/ScrollProgress.jsx';
 import Services from './components/Services.jsx';
+import Stats from './components/Stats.jsx';
+import useSmoothScroll from './lib/useSmoothScroll.js';
 import { cardHover, fadeUp, staggerContainer } from './motion.js';
 
 const benefits = [
@@ -27,8 +35,14 @@ const conversion = [
 ];
 
 export default function App() {
+  useSmoothScroll();
+
   return (
     <div className="studio-page min-h-screen overflow-hidden text-ink">
+      <ScrollProgress />
+      <Navbar />
+      <FloatingWhatsApp />
+      <PrivacyNotice />
       <div className="tech-lines pointer-events-none fixed inset-0 z-0" />
       <GlobalPacman />
       <div className="ink-splatter -left-20 top-64 z-0 hidden lg:block" />
@@ -50,7 +64,11 @@ export default function App() {
         <motion.section id="beneficios" className="section-shell" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.22 }}>
           <div className="section-heading">
             <span className="eyebrow">¿Para qué sirve una web app?</span>
-            <h2>No es un gasto, es una inversión que trabaja 24/7.</h2>
+            <AnimatedHeading
+              as="h2"
+              text="No es un gasto, es una inversión que trabaja 24/7."
+              className="mt-4 font-condensed text-4xl font-black uppercase leading-none tracking-normal text-ink sm:text-6xl"
+            />
             <p>
               Una web app funciona como presencia, sistema y vendedor digital. Ordena tu oferta, responde mejor y
               convierte cada visita en una oportunidad real.
@@ -68,6 +86,8 @@ export default function App() {
             ))}
           </motion.div>
         </motion.section>
+
+        <Stats />
 
         <Services />
 
@@ -98,12 +118,17 @@ export default function App() {
         <motion.section className="section-shell py-20" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.25 }}>
           <motion.div className="premium-border relative overflow-hidden border border-ink bg-white p-7 shadow-ink md:p-12" whileHover={{ scale: 1.006 }} transition={{ type: 'spring', stiffness: 180, damping: 26 }}>
             <div className="absolute inset-x-8 top-0 h-px bg-gold" />
-            <p className="max-w-5xl font-condensed text-4xl font-black uppercase leading-none text-ink md:text-6xl">
-              Tu negocio no necesita solo una página. Necesita una herramienta digital que trabaje por ti.
-            </p>
-            <a href="#contacto" className="btn-primary mt-8">
-              Cotizar mi web app
-            </a>
+            <AnimatedHeading
+              as="p"
+              text="Tu negocio no necesita solo una página. Necesita una herramienta digital que trabaje por ti."
+              className="max-w-5xl font-condensed text-4xl font-black uppercase leading-none text-ink md:text-6xl"
+            />
+            <Magnetic strength={0.4} className="mt-8 inline-block">
+              <a href="#contacto" className="btn-primary">
+                Cotizar mi web app
+                <ArrowRight size={18} />
+              </a>
+            </Magnetic>
           </motion.div>
         </motion.section>
 

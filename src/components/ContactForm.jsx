@@ -1,6 +1,7 @@
 import { Send } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import { openPrivacy } from './PrivacyNotice.jsx';
 import { fadeUp } from '../motion.js';
 
 const initialForm = {
@@ -12,7 +13,7 @@ const initialForm = {
   message: '',
 };
 
-const whatsappNumber = '529981234567';
+const whatsappNumber = '529841820414';
 
 export default function ContactForm() {
   const [form, setForm] = useState(initialForm);
@@ -91,6 +92,18 @@ export default function ContactForm() {
             Enviar por WhatsApp
             <Send size={18} />
           </button>
+          <p className="text-xs leading-5 text-ink/[0.5] sm:col-span-2">
+            Al enviar aceptas nuestro{' '}
+            <button
+              type="button"
+              onClick={openPrivacy}
+              data-cursor
+              className="font-semibold text-gold underline-offset-2 hover:underline"
+            >
+              Aviso de Privacidad
+            </button>
+            .
+          </p>
         </motion.form>
       </div>
     </motion.section>

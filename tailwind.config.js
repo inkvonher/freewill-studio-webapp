@@ -11,7 +11,8 @@ export default {
       },
       fontFamily: {
         sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        condensed: ['"Arial Narrow"', '"Roboto Condensed"', '"Helvetica Neue Condensed"', 'Impact', 'sans-serif'],
+        display: ['Anton', '"Arial Narrow"', 'Impact', 'sans-serif'],
+        condensed: ['Anton', '"Arial Narrow"', '"Roboto Condensed"', 'Impact', 'sans-serif'],
       },
       boxShadow: {
         ink: '0 24px 70px rgba(17,17,17,0.08)',

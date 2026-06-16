@@ -19,6 +19,55 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Lenis: desactiva el scroll nativo cuando el scroll suave está activo */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Cursor personalizado: oculta el nativo solo en desktop */
+@media (pointer: fine) {
+  body.has-custom-cursor,
+  body.has-custom-cursor a,
+  body.has-custom-cursor button,
+  body.has-custom-cursor [data-cursor] {
+    cursor: none;
+  }
+}
+
+/* Accesibilidad: respeta a quien prefiere menos movimiento */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .tech-lines,
+  .global-pacman-layer,
+  .slow-particle,
+  .hero-glow,
+  .ticker-track,
+  .showreel-track {
+    animation: none !important;
+  }
+
+  .global-pacman-layer {
+    display: none !important;
+  }
+}
+
 body {
   margin: 0;
   min-width: 320px;
@@ -530,10 +579,18 @@ a {
   position: absolute;
   left: 0;
   top: 0;
-  width: 2.2rem;
-  height: 2.2rem;
-  animation: globalPacmanRoute 32s linear infinite;
+  width: 1.9rem;
+  height: 2.3rem;
+  animation: globalLogoRoute 32s linear infinite;
   transform: translateZ(0);
+}
+
+.global-logo-mark {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 0 8px rgba(184, 121, 5, 0.42));
+  opacity: 0.96;
 }
 
 .global-pacman {
@@ -693,6 +750,46 @@ a {
   }
   100% {
     transform: translate(104vw, 76vh) rotate(0deg);
+    opacity: 0;
+  }
+}
+
+@keyframes globalLogoRoute {
+  0% {
+    transform: translate(-4rem, 14vh);
+    opacity: 0;
+  }
+  5% {
+    opacity: 0.95;
+  }
+  18% {
+    transform: translate(42vw, 14vh);
+  }
+  22% {
+    transform: translate(42vw, 34vh);
+  }
+  38% {
+    transform: translate(82vw, 34vh);
+  }
+  42% {
+    transform: translate(82vw, 55vh);
+  }
+  58% {
+    transform: translate(24vw, 55vh);
+  }
+  62% {
+    transform: translate(24vw, 76vh);
+  }
+  82% {
+    transform: translate(92vw, 76vh);
+    opacity: 0.95;
+  }
+  95% {
+    transform: translate(104vw, 76vh);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(104vw, 76vh);
     opacity: 0;
   }
 }

@@ -1,7 +1,8 @@
 import { ExternalLink, Play } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { projects } from '../data/projects.js';
-import { cardHover, fadeUp, staggerContainer } from '../motion.js';
+import TiltCard from './TiltCard.jsx';
+import { fadeUp, staggerContainer } from '../motion.js';
 
 export default function Projects() {
   return (
@@ -31,7 +32,8 @@ export default function Projects() {
 
       <motion.div className="grid gap-5 md:grid-cols-2" variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.18 }}>
         {projects.map((project) => (
-          <motion.article key={project.name} variants={fadeUp} whileHover={cardHover} className="cyber-panel premium-border group overflow-hidden">
+          <motion.div key={project.name} variants={fadeUp}>
+            <TiltCard className="group cyber-panel premium-border overflow-hidden">
             <div className="relative min-h-56 overflow-hidden border-b border-ink bg-paper">
               <div className="corner-frame" />
               <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(17,17,17,0.08),transparent_28%),radial-gradient(circle_at_70%_30%,rgba(184,121,5,0.15),transparent_30%)]" />
@@ -66,7 +68,8 @@ export default function Projects() {
                 <ExternalLink size={16} />
               </a>
             </div>
-          </motion.article>
+            </TiltCard>
+          </motion.div>
         ))}
       </motion.div>
     </motion.section>

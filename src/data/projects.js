@@ -5,13 +5,13 @@ export const projects = [
     type: 'Web App con Reservas',
     description: 'Experiencia digital para estudio creativo con enfoque en agenda, servicios y conversión por WhatsApp.',
     image: 'MT',
-    url: 'https://mambas-web.vercel.app/',
+    url: 'https://mambaspdc.com/',
   },
   {
     name: 'Karen Cardiel',
     type: 'Página Web Profesional',
     description: 'Sitio profesional para psicología con presencia cálida, confianza y contacto directo para nuevas consultas.',
     image: 'KC',
-    url: 'https://psicologa-karen-cardiel.vercel.app/',
+    url: 'https://karencardiel.com/',
   },
 ];
