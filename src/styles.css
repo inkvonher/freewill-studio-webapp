@@ -579,8 +579,8 @@ a {
   position: absolute;
   left: 0;
   top: 0;
-  width: 1.9rem;
-  height: 2.3rem;
+  width: 2.2rem;
+  height: 2.2rem;
   animation: globalLogoRoute 32s linear infinite;
   transform: translateZ(0);
 }
@@ -589,8 +589,8 @@ a {
   display: block;
   width: 100%;
   height: auto;
-  filter: drop-shadow(0 0 8px rgba(184, 121, 5, 0.42));
-  opacity: 0.96;
+  filter: drop-shadow(0 0 7px rgba(184, 121, 5, 0.38));
+  opacity: 0.95;
 }
 
 .global-pacman {
