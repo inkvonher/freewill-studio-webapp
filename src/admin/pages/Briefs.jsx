@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import JSZip from 'jszip';
-import { Archive, Download, FileJson, FileText, FolderPlus, Loader2, Package, Trash2, MessageCircle, ChevronDown } from 'lucide-react';
+import { Archive, Download, FileJson, FileText, FolderPlus, Loader2, Package, Trash2, MessageCircle, UserPlus, ChevronDown } from 'lucide-react';
 import useCollection from '../useCollection.js';
 import { Badge, Modal } from '../ui.jsx';
 import { GENERAL } from '../../lib/briefQuestions.js';
@@ -626,6 +626,7 @@ function Detail({ brief }) {
 export default function Briefs() {
   const { rows, loading, update, remove } = useCollection('briefs');
   const { insert: insertProject } = useCollection('projects');
+  const { insert: insertLead } = useCollection('leads');
   const [open, setOpen] = useState(null);
   const [busyId, setBusyId] = useState('');
 
@@ -641,6 +642,34 @@ export default function Briefs() {
     if (brief.status === 'nuevo') {
       await update(brief.id, { status: 'revisado' });
     }
+  };
+
+  const createLeadFromBrief = async (brief) => {
+    const business = clean(brief.business) || clean(brief.contact_name) || 'Prospecto sin nombre';
+    if (!window.confirm(`¿Crear prospecto para ${business}?`)) return;
+
+    setBusyId(brief.id);
+    const err = await insertLead({
+      business,
+      type: 'Otro',
+      phone: clean(brief.whatsapp) || null,
+      instagram: clean((brief.data || {}).instagram) || null,
+      status: 'respondio',
+      last_contact: new Date().toISOString().slice(0, 10),
+      notes: [
+        `Creado desde cuestionario: ${brief.page_type || 'Sin tipo'}`,
+        '',
+        briefToMarkdown(brief),
+      ].join('\n'),
+    });
+
+    if (!err) {
+      if (brief.status === 'nuevo') await update(brief.id, { status: 'revisado' });
+      setOpen(null);
+    } else {
+      window.alert(`No se pudo crear el prospecto: ${err.message}`);
+    }
+    setBusyId('');
   };
 
   const createProjectFromBrief = async (brief) => {
@@ -722,6 +751,7 @@ export default function Briefs() {
                       <button onClick={() => downloadBriefMarkdown(b)} className="p-1.5 text-ink/[0.55] hover:text-gold" title="Descargar brief"><Download size={15} /></button>
                       <button onClick={() => generateProposalFromBrief(b)} className="p-1.5 text-ink/[0.55] hover:text-gold" title="Generar propuesta"><FileText size={15} /></button>
                       <button onClick={() => generateClientKitFromBrief(b)} className="p-1.5 text-ink/[0.55] hover:text-gold" title="Kit inicial de app"><Package size={15} /></button>
+                      <button onClick={() => createLeadFromBrief(b)} disabled={busyId === b.id} className="p-1.5 text-ink/[0.55] hover:text-gold disabled:opacity-40" title="Crear prospecto"><UserPlus size={15} /></button>
                       <button onClick={() => createProjectFromBrief(b)} disabled={busyId === b.id} className="p-1.5 text-ink/[0.55] hover:text-gold disabled:opacity-40" title="Crear proyecto"><FolderPlus size={15} /></button>
                       {b.whatsapp && <a href={`https://wa.me/${b.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noreferrer" className="p-1.5 text-ink/[0.55] hover:text-green-600"><MessageCircle size={15} /></a>}
                       <button onClick={() => window.confirm('¿Eliminar este cuestionario?') && remove(b.id)} className="p-1.5 text-ink/[0.55] hover:text-red-600"><Trash2 size={15} /></button>
@@ -747,6 +777,9 @@ export default function Briefs() {
             </button>
             <button onClick={() => generateClientKitFromBrief(open)} className="inline-flex items-center gap-2 border border-ink/[0.25] bg-white px-4 py-2.5 font-condensed text-sm font-black uppercase tracking-[0.12em] text-ink hover:border-gold hover:text-gold">
               <Package size={16} /> Kit app
+            </button>
+            <button onClick={() => createLeadFromBrief(open)} disabled={busyId === open.id} className="inline-flex items-center gap-2 border border-ink/[0.25] bg-white px-4 py-2.5 font-condensed text-sm font-black uppercase tracking-[0.12em] text-ink hover:border-gold hover:text-gold disabled:opacity-40">
+              {busyId === open.id ? <Loader2 size={16} className="animate-spin" /> : <UserPlus size={16} />} Crear prospecto
             </button>
             <button onClick={() => createProjectFromBrief(open)} disabled={busyId === open.id} className="inline-flex items-center gap-2 border border-ink/[0.25] bg-white px-4 py-2.5 font-condensed text-sm font-black uppercase tracking-[0.12em] text-ink hover:border-gold hover:text-gold disabled:opacity-40">
               {busyId === open.id ? <Loader2 size={16} className="animate-spin" /> : <FolderPlus size={16} />} Crear proyecto
