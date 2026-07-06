@@ -3,16 +3,20 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
 import studioLogo from '../assets/freewill-studio-logo.png';
 import Magnetic from './Magnetic.jsx';
-
-const links = [
-  ['Servicios', '#servicios'],
-  ['Proyectos', '#proyectos'],
-  ['Proceso', '#proceso'],
-  ['Contacto', '#contacto'],
-];
+import LangToggle from './LangToggle.jsx';
+import { useLang } from '../i18n.jsx';
 
 export default function Navbar() {
+  const { t } = useLang();
   const [show, setShow] = useState(false);
+
+  const links = [
+    [t.nav.servicios, '#servicios'],
+    [t.nav.proyectos, '#proyectos'],
+    [t.nav.proceso, '#proceso'],
+    [t.nav.faq, '#faq'],
+    [t.nav.contacto, '#contacto'],
+  ];
 
   useEffect(() => {
     const onScroll = () => setShow(window.scrollY > 560);
@@ -49,15 +53,15 @@ export default function Navbar() {
               ))}
             </div>
 
-            <Magnetic strength={0.4}>
-              <a
-                href="#contacto"
-                className="btn-primary min-h-10 px-4 py-2 text-sm"
-              >
-                Cotizar
-                <ArrowUpRight size={16} />
-              </a>
-            </Magnetic>
+            <div className="flex items-center gap-3">
+              <LangToggle />
+              <Magnetic strength={0.4}>
+                <a href="#contacto" className="btn-primary min-h-10 px-4 py-2 text-sm">
+                  {t.nav.cta}
+                  <ArrowUpRight size={16} />
+                </a>
+              </Magnetic>
+            </div>
           </nav>
         </motion.header>
       )}

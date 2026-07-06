@@ -4,16 +4,11 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import studioLogo from '../assets/freewill-studio-logo.png';
 import DecodeHeading from './DecodeHeading.jsx';
 import Magnetic from './Magnetic.jsx';
+import LangToggle from './LangToggle.jsx';
+import { useLang } from '../i18n.jsx';
 import { fadeUp, staggerContainer } from '../motion.js';
 
-const included = [
-  ['Desarrollo', 'Tecnología a tu medida.', Code2],
-  ['Diseño', 'Experiencia que conecta.', Palette],
-  ['Automatización', 'Menos trabajo, más eficiencia.', Settings],
-  ['Estrategia', 'Presencia que genera clientes.', TrendingUp],
-  ['Propiedad total', 'Sin rentas, sin dependencias.', ShieldCheck],
-];
-
+const ICONS = [Code2, Palette, Settings, TrendingUp, ShieldCheck];
 const brainNodes = [
   ['Estrategia', '18%', '34%'],
   ['Marca', '35%', '22%'],
@@ -24,6 +19,7 @@ const brainNodes = [
 ];
 
 export default function Hero() {
+  const { t } = useLang();
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
   const glowY = useTransform(scrollYProgress, [0, 1], [0, 160]);
@@ -43,40 +39,41 @@ export default function Hero() {
             <img src={studioLogo} alt="FREEWILL.STUDIO" />
           </span>
         </a>
-        <div className="hidden text-right font-condensed text-sm font-black uppercase tracking-[0.28em] text-ink/[0.70] sm:block">
-          <p>Unidad</p>
-          <p>Consciencia</p>
-          <p>Propósito</p>
+        <div className="flex items-start gap-5">
+          <div className="hidden text-right font-condensed text-sm font-black uppercase tracking-[0.28em] text-ink/[0.70] sm:block">
+            {t.hero.values.map((v) => <p key={v}>{v}</p>)}
+          </div>
+          <LangToggle />
         </div>
       </nav>
 
       <div className="mx-auto grid min-h-[calc(100vh-5rem)] max-w-7xl items-center gap-10 py-12 lg:grid-cols-[1.02fr_0.98fr]">
         <motion.section variants={staggerContainer} initial="hidden" animate="visible" style={{ y: contentY, opacity: fade }}>
           <motion.p variants={fadeUp} className="font-condensed text-sm font-black uppercase tracking-[0.42em] text-ink/[0.70]">
-            Libre albedrío crea tu realidad.
+            {t.hero.tagline}
           </motion.p>
           <DecodeHeading
             as="h1"
-            text="Web apps que trabajan por tu negocio"
-            goldWord="negocio"
+            text={t.hero.title}
+            goldWord={t.hero.goldWord}
             className="mt-8 max-w-5xl font-condensed text-6xl font-black uppercase leading-[0.86] tracking-normal text-ink sm:text-8xl lg:text-[8rem]"
           />
           <motion.p variants={fadeUp} className="mt-7 max-w-2xl font-condensed text-2xl font-black uppercase leading-tight tracking-[0.04em] text-gold sm:text-3xl">
-            Inversión real, resultados reales.
+            {t.hero.subtitle}
           </motion.p>
           <motion.p variants={fadeUp} className="mt-6 max-w-2xl text-lg leading-8 text-ink/[0.62]">
-            Diseñamos páginas web y aplicaciones digitales que atraen clientes, automatizan procesos y elevan tu marca.
+            {t.hero.desc}
           </motion.p>
           <motion.div variants={fadeUp} className="mt-9 flex flex-col gap-3 sm:flex-row">
             <Magnetic strength={0.4}>
               <a href="#contacto" className="btn-primary">
-                Solicitar proyecto
+                {t.hero.cta1}
                 <ArrowRight size={18} />
               </a>
             </Magnetic>
             <Magnetic strength={0.4}>
               <a href="#proyectos" className="btn-secondary">
-                Ver proyectos
+                {t.hero.cta2}
               </a>
             </Magnetic>
           </motion.div>
@@ -86,14 +83,14 @@ export default function Hero() {
           <motion.div className="cyber-panel premium-border overflow-hidden p-5 md:p-7" whileHover={{ scale: 1.008, y: -3 }} transition={{ type: 'spring', stiffness: 180, damping: 26 }}>
             <div className="corner-frame" />
             <div className="mb-5 flex items-center justify-between border-b border-gold pb-4">
-              <span className="font-condensed text-2xl font-black uppercase tracking-[0.08em]">Ruta de conversión</span>
+              <span className="font-condensed text-2xl font-black uppercase tracking-[0.08em]">{t.hero.panelTitle}</span>
               <span className="hud-label">FW-MIND 01</span>
             </div>
             <div className="mb-6 grid gap-5 md:grid-cols-[1fr_0.58fr]">
               <div className="maze-stage">
                 <div className="system-grid" />
                 <div className="maze-frame" aria-hidden="true">
-                  <svg className="maze-map" viewBox="0 0 420 420" role="img" aria-label="Laberinto digital que conecta visita, conversación, cotización, reserva y venta">
+                  <svg className="maze-map" viewBox="0 0 420 420" role="img" aria-label={t.hero.clicToClient}>
                     <path className="maze-wall" d="M56 56 H364 V116 H302 V178 H364 V364 H56 V302 H118 V240 H56 Z" />
                     <path className="maze-wall" d="M118 116 H240 V178 H178 V240 H302 V302 H178" />
                     <path className="maze-wall" d="M240 56 V116 M302 178 V240 M118 302 V364" />
@@ -107,25 +104,20 @@ export default function Hero() {
                     </g>
                   </svg>
                   {brainNodes.map(([label, left, top], index) => (
-                    <span
-                      key={label}
-                      className="maze-node"
-                      style={{ left, top, animationDelay: `${index * 0.35}s` }}
-                      aria-label={label}
-                    >
+                    <span key={label} className="maze-node" style={{ left, top, animationDelay: `${index * 0.35}s` }} aria-label={label}>
                       <span />
                     </span>
                   ))}
                 </div>
                 <div className="maze-status">
                   <GitBranch size={22} strokeWidth={1.5} />
-                  <span>del clic al cliente</span>
+                  <span>{t.hero.clicToClient}</span>
                 </div>
-                <div className="maze-label maze-label-start">entrada</div>
-                <div className="maze-label maze-label-end">conversión</div>
+                <div className="maze-label maze-label-start">{t.hero.entry}</div>
+                <div className="maze-label maze-label-end">{t.hero.conversion}</div>
               </div>
               <div className="grid content-between gap-3">
-                {['Atrae', 'Conecta', 'Convierte'].map((item, index) => (
+                {t.hero.steps3.map((item, index) => (
                   <motion.div
                     key={item}
                     className="signal-card border border-ink bg-paper p-3"
@@ -138,33 +130,29 @@ export default function Hero() {
                       <Zap size={15} className="text-gold" />
                     </div>
                     <div className="h-1 bg-ink/[0.15]">
-                      <motion.div
-                        className="h-full bg-gold"
-                        initial={{ width: 0 }}
-                        animate={{ width: `${68 + index * 12}%` }}
-                        transition={{ delay: 0.75 + index * 0.18, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-                      />
+                      <motion.div className="h-full bg-gold" initial={{ width: 0 }} animate={{ width: `${68 + index * 12}%` }} transition={{ delay: 0.75 + index * 0.18, duration: 0.9, ease: [0.16, 1, 0.3, 1] }} />
                     </div>
                   </motion.div>
                 ))}
                 <div className="border border-gold bg-ink p-4 text-paper">
                   <p className="font-condensed text-5xl font-black uppercase leading-none">24/7</p>
-                  <p className="mt-2 font-condensed text-sm font-black uppercase tracking-[0.18em] text-paper/[0.62]">
-                    presencia activa
-                  </p>
+                  <p className="mt-2 font-condensed text-sm font-black uppercase tracking-[0.18em] text-paper/[0.62]">{t.hero.presence}</p>
                 </div>
               </div>
             </div>
             <motion.div className="grid gap-5" variants={staggerContainer} initial="hidden" animate="visible">
-              {included.map(([title, description, Icon]) => (
-                <motion.div variants={fadeUp} key={title} className="grid grid-cols-[3.8rem_1fr] items-start gap-4 border-b border-dashed border-ink/[0.25] pb-5 last:border-b-0 last:pb-0">
-                  <Icon className="text-gold" size={40} strokeWidth={1.6} />
-                  <div>
-                    <h2 className="font-condensed text-2xl font-black uppercase leading-none text-ink">{title}</h2>
-                    <p className="mt-2 font-condensed text-lg uppercase tracking-[0.08em] text-ink/[0.68]">{description}</p>
-                  </div>
-                </motion.div>
-              ))}
+              {t.hero.included.map(([title, description], i) => {
+                const Icon = ICONS[i];
+                return (
+                  <motion.div variants={fadeUp} key={title} className="grid grid-cols-[3.8rem_1fr] items-start gap-4 border-b border-dashed border-ink/[0.25] pb-5 last:border-b-0 last:pb-0">
+                    <Icon className="text-gold" size={40} strokeWidth={1.6} />
+                    <div>
+                      <h2 className="font-condensed text-2xl font-black uppercase leading-none text-ink">{title}</h2>
+                      <p className="mt-2 font-condensed text-lg uppercase tracking-[0.08em] text-ink/[0.68]">{description}</p>
+                    </div>
+                  </motion.div>
+                );
+              })}
             </motion.div>
           </motion.div>
         </motion.section>

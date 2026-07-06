@@ -2,15 +2,17 @@ import { ExternalLink, Play } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { projects } from '../data/projects.js';
 import TiltCard from './TiltCard.jsx';
+import { useLang } from '../i18n.jsx';
 import { fadeUp, staggerContainer } from '../motion.js';
 
 export default function Projects() {
+  const { t } = useLang();
   return (
     <motion.section id="proyectos" className="section-shell" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }}>
       <div className="section-heading">
-        <span className="eyebrow">Proyectos creados</span>
-        <h2>Portafolio vivo para organizar las web apps de clientes.</h2>
-        <p>Una selección inicial de proyectos publicados. Iremos integrando nuevos casos conforme estén listos.</p>
+        <span className="eyebrow">{t.projects.eyebrow}</span>
+        <h2>{t.projects.h2}</h2>
+        <p>{t.projects.p}</p>
       </div>
 
       <div className="showreel-strip mb-6" aria-hidden="true">
@@ -23,8 +25,8 @@ export default function Projects() {
                   {project.name}
                 </span>
               ))}
-              <span className="showreel-item showreel-item-muted">FREEWILL.STUDIO</span>
-              <span className="showreel-item showreel-item-muted">WEB APPS EN MOVIMIENTO</span>
+              <span className="showreel-item showreel-item-muted">{t.projects.muted[0]}</span>
+              <span className="showreel-item showreel-item-muted">{t.projects.muted[1]}</span>
             </div>
           ))}
         </div>
@@ -64,7 +66,7 @@ export default function Projects() {
                 rel="noreferrer"
                 className="shine-button relative isolate mt-7 inline-flex items-center gap-2 overflow-hidden border border-ink px-4 py-3 font-condensed text-base font-black uppercase tracking-[0.14em] text-ink transition hover:border-gold hover:text-gold hover:shadow-[0_0_24px_rgba(184,121,5,0.24)]"
               >
-                Ver web
+                {t.projects.viewWeb}
                 <ExternalLink size={16} />
               </a>
             </div>

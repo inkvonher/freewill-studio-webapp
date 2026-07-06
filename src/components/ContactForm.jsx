@@ -1,111 +1,67 @@
-import { Send } from 'lucide-react';
+import { ArrowRight, ClipboardList, MessageCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import Magnetic from './Magnetic.jsx';
 import { openPrivacy } from './PrivacyNotice.jsx';
+import { useLang } from '../i18n.jsx';
 import { fadeUp } from '../motion.js';
 
-const initialForm = {
-  name: '',
-  business: '',
-  whatsapp: '',
-  projectType: 'Landing Page',
-  budget: '$5,000 - $10,000 MXN',
-  message: '',
-};
-
 const whatsappNumber = '529841820414';
+const waText = encodeURIComponent('Hola FREEWILL.STUDIO, quiero cotizar una web app.');
+const waLink = `https://wa.me/${whatsappNumber}?text=${waText}`;
 
 export default function ContactForm() {
-  const [form, setForm] = useState(initialForm);
-
-  const updateField = (event) => {
-    const { name, value } = event.target;
-    setForm((current) => ({ ...current, [name]: value }));
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
-    const message = [
-      'Hola FREEWILL.STUDIO, quiero cotizar una web app.',
-      '',
-      `Nombre: ${form.name}`,
-      `Negocio: ${form.business}`,
-      `WhatsApp: ${form.whatsapp}`,
-      `Tipo de proyecto: ${form.projectType}`,
-      `Presupuesto aproximado: ${form.budget}`,
-      `Mensaje: ${form.message}`,
-    ].join('\n');
-
-    window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`, '_blank', 'noreferrer');
-  };
-
+  const { t } = useLang();
   return (
     <motion.section id="contacto" className="section-shell pb-24" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.22 }}>
-      <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
-        <div>
-          <span className="eyebrow">Contacto</span>
-          <h2 className="mt-4 font-condensed text-4xl font-black uppercase leading-none sm:text-6xl">Cuéntanos qué herramienta necesita tu negocio.</h2>
-          <p className="mt-5 text-lg leading-8 text-ink/[0.62]">
-            Completa el formulario y envíanos los detalles por WhatsApp para preparar una cotización clara.
-          </p>
+      <div className="mx-auto max-w-4xl text-center">
+        <span className="eyebrow">{t.contact.eyebrow}</span>
+        <h2 className="mt-4 font-condensed text-4xl font-black uppercase leading-none text-ink sm:text-6xl">
+          {t.contact.h2}
+        </h2>
+        <p className="mx-auto mt-5 max-w-2xl text-lg leading-8 text-ink/[0.62]">
+          {t.contact.p}
+        </p>
+      </div>
+
+      <motion.div
+        className="premium-border relative mx-auto mt-10 max-w-3xl overflow-hidden border border-ink bg-white p-8 text-center shadow-ink sm:p-12"
+        whileHover={{ scale: 1.006 }}
+        transition={{ type: 'spring', stiffness: 180, damping: 26 }}
+      >
+        <div className="absolute inset-x-8 top-0 h-px bg-gold" />
+        <span className="mx-auto flex h-16 w-16 items-center justify-center border border-ink bg-gold text-ink">
+          <ClipboardList size={30} />
+        </span>
+        <h3 className="mt-6 font-condensed text-3xl font-black uppercase leading-none text-ink sm:text-4xl">
+          {t.contact.cardTitle}
+        </h3>
+        <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-ink/[0.6]">
+          {t.contact.cardDesc}
+        </p>
+
+        <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <Magnetic strength={0.4}>
+            <a href="/cuestionario" className="btn-primary px-7 py-4 text-base">
+              {t.contact.btn1}
+              <ArrowRight size={18} />
+            </a>
+          </Magnetic>
+          <Magnetic strength={0.4}>
+            <a href={waLink} target="_blank" rel="noreferrer" className="btn-secondary px-7 py-4 text-base">
+              {t.contact.btn2}
+              <MessageCircle size={18} />
+            </a>
+          </Magnetic>
         </div>
 
-        <motion.form onSubmit={handleSubmit} className="paper-card premium-border grid gap-4 p-5 sm:grid-cols-2 sm:p-7" whileHover={{ y: -3 }} transition={{ type: 'spring', stiffness: 180, damping: 26 }}>
-          <label className="form-field">
-            <span>Nombre</span>
-            <input required name="name" value={form.name} onChange={updateField} placeholder="Tu nombre" />
-          </label>
-          <label className="form-field">
-            <span>Negocio</span>
-            <input required name="business" value={form.business} onChange={updateField} placeholder="Nombre del negocio" />
-          </label>
-          <label className="form-field">
-            <span>WhatsApp</span>
-            <input required name="whatsapp" value={form.whatsapp} onChange={updateField} placeholder="+52..." />
-          </label>
-          <label className="form-field">
-            <span>Tipo de proyecto</span>
-            <select name="projectType" value={form.projectType} onChange={updateField}>
-              <option>Landing Page</option>
-              <option>Página Web Profesional</option>
-              <option>Web App con Reservas</option>
-              <option>Ecommerce</option>
-              <option>Sistema Interno</option>
-              <option>App Web Personalizada</option>
-            </select>
-          </label>
-          <label className="form-field sm:col-span-2">
-            <span>Presupuesto aproximado</span>
-            <select name="budget" value={form.budget} onChange={updateField}>
-              <option>$5,000 - $10,000 MXN</option>
-              <option>$10,000 - $20,000 MXN</option>
-              <option>$20,000 - $40,000 MXN</option>
-              <option>$40,000+ MXN</option>
-            </select>
-          </label>
-          <label className="form-field sm:col-span-2">
-            <span>Mensaje</span>
-            <textarea required name="message" rows="5" value={form.message} onChange={updateField} placeholder="Cuéntanos qué quieres crear, vender o automatizar." />
-          </label>
-          <button type="submit" className="btn-primary sm:col-span-2">
-            Enviar por WhatsApp
-            <Send size={18} />
+        <p className="mt-6 text-xs leading-5 text-ink/[0.5]">
+          {t.contact.privacyPre}{' '}
+          <button type="button" onClick={openPrivacy} data-cursor className="font-semibold text-gold underline-offset-2 hover:underline">
+            {t.contact.privacyLink}
           </button>
-          <p className="text-xs leading-5 text-ink/[0.5] sm:col-span-2">
-            Al enviar aceptas nuestro{' '}
-            <button
-              type="button"
-              onClick={openPrivacy}
-              data-cursor
-              className="font-semibold text-gold underline-offset-2 hover:underline"
-            >
-              Aviso de Privacidad
-            </button>
-            .
-          </p>
-        </motion.form>
-      </div>
+          .
+        </p>
+      </motion.div>
     </motion.section>
   );
 }
