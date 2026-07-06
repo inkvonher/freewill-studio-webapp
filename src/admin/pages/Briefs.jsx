@@ -499,11 +499,55 @@ const readmeToMarkdown = (brief) => {
     '- `03-plan-de-proyecto.md`: fases, stack y checklist',
     '- `04-copy-inicial.md`: textos iniciales y secciones sugeridas',
     '- `05-brief-tecnico.md`: guía técnica para desarrollo',
+    '- `prompt.md`: instrucción lista para Codex o Claude',
     '- `data/cuestionario.json`: datos originales del formulario',
     '',
     `## Siguiente paso`,
     '',
-    'Revisar alcance, confirmar inversión y crear el repositorio/proyecto base del cliente.',
+    'Abrir una nueva sesión de Codex o Claude en esta carpeta y pegar el contenido de `prompt.md`.',
+  ].join('\n');
+};
+
+const agentPromptToMarkdown = (brief) => {
+  const p = getProposalData(brief);
+  const stack = recommendedStack(p.type).join(', ');
+  return [
+    `# Prompt para crear ${p.projectName}`,
+    '',
+    'Copia y pega lo siguiente en una nueva sesión de Codex o Claude abierta en esta carpeta:',
+    '',
+    '```txt',
+    `Revisa esta carpeta completa antes de crear o modificar archivos.`,
+    '',
+    `Contexto: vamos a construir ${p.title} para ${p.projectName}.`,
+    `Tipo de proyecto: ${p.type}.`,
+    `Objetivo principal: ${p.mainGoal}`,
+    `Stack recomendado: ${stack}.`,
+    '',
+    `Lee estos archivos y úsalos como fuente de verdad:`,
+    `- README.md`,
+    `- 01-brief.md`,
+    `- 02-propuesta.md`,
+    `- 03-plan-de-proyecto.md`,
+    `- 04-copy-inicial.md`,
+    `- 05-brief-tecnico.md`,
+    `- data/cuestionario.json`,
+    '',
+    `Tarea: crea la primera versión completa del proyecto del cliente.`,
+    '',
+    `Requisitos:`,
+    `- Usa React + Vite + Tailwind CSS salvo que el brief técnico indique una razón clara para otra cosa.`,
+    `- Diseña una experiencia responsive, pulida y lista para presentar al cliente.`,
+    `- La primera pantalla debe ser la experiencia real del sitio/app, no una landing genérica de explicación.`,
+    `- Usa el copy inicial como base, pero mejora la jerarquía, claridad y llamadas a la acción.`,
+    `- Implementa las secciones/pantallas necesarias según el tipo de proyecto.`,
+    `- Si el proyecto requiere datos, auth, reservas, ecommerce o panel, crea una versión inicial funcional o una estructura clara para continuar.`,
+    `- Mantén el diseño alineado al giro del cliente y evita una plantilla genérica.`,
+    `- Agrega instrucciones de ejecución en README.md si creas un proyecto nuevo.`,
+    `- Al terminar, ejecuta build/lint si existen scripts disponibles y reporta el resultado.`,
+    '',
+    `Antes de programar, revisa los archivos y define brevemente el alcance que vas a implementar.`,
+    '```',
   ].join('\n');
 };
 
@@ -551,6 +595,7 @@ const buildClientKitZip = (zip, brief) => {
   folder.file('03-plan-de-proyecto.md', projectPlanToMarkdown(brief));
   folder.file('04-copy-inicial.md', copyDraftToMarkdown(brief));
   folder.file('05-brief-tecnico.md', technicalBriefToMarkdown(brief));
+  folder.file('prompt.md', agentPromptToMarkdown(brief));
   folder.folder('data').file('cuestionario.json', JSON.stringify(brief, null, 2));
   return folder;
 };
