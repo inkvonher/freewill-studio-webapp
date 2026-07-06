@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import JSZip from 'jszip';
-import { Archive, Download, FileJson, FileText, FolderPlus, Loader2, Trash2, MessageCircle, ChevronDown } from 'lucide-react';
+import { Archive, Download, FileJson, FileText, FolderPlus, Loader2, Package, Trash2, MessageCircle, ChevronDown } from 'lucide-react';
 import useCollection from '../useCollection.js';
 import { Badge, Modal } from '../ui.jsx';
 import { GENERAL } from '../../lib/briefQuestions.js';
@@ -340,6 +340,173 @@ const proposalToHtml = (brief) => {
 </html>`;
 };
 
+const recommendedStack = (type) => {
+  if (type === 'Landing Page' || type === 'Página Web Profesional') {
+    return ['Vite + React', 'Tailwind CSS', 'Vercel', 'Formulario/WhatsApp', 'SEO técnico base'];
+  }
+  if (type === 'Web App con Reservas') {
+    return ['Vite + React', 'Tailwind CSS', 'Supabase Auth/DB', 'Reservas y disponibilidad', 'Vercel'];
+  }
+  if (type === 'Ecommerce') {
+    return ['Vite + React', 'Tailwind CSS', 'Supabase o Shopify según inventario', 'Pagos online', 'Vercel'];
+  }
+  if (type === 'Sistema Interno') {
+    return ['Vite + React', 'Tailwind CSS', 'Supabase Auth/DB', 'Roles/permisos', 'Panel administrativo'];
+  }
+  return ['Vite + React', 'Tailwind CSS', 'Supabase Auth/DB', 'Integraciones según alcance', 'Vercel'];
+};
+
+const projectPlanToMarkdown = (brief) => {
+  const p = getProposalData(brief);
+  const stack = recommendedStack(p.type);
+  return [
+    `# Plan de proyecto - ${p.projectName}`,
+    '',
+    `## Objetivo`,
+    '',
+    p.mainGoal,
+    '',
+    `## Alcance inicial`,
+    '',
+    ...p.deliverables.map((item) => `- ${item}`),
+    '',
+    `## Stack recomendado`,
+    '',
+    ...stack.map((item) => `- ${item}`),
+    '',
+    `## Fases`,
+    '',
+    '1. Descubrimiento y confirmación de alcance',
+    '2. Estructura de contenido y arquitectura',
+    '3. Diseño visual responsive',
+    '4. Desarrollo de pantallas y flujos principales',
+    '5. Integraciones, formularios, datos o automatizaciones',
+    '6. Pruebas en desktop/mobile',
+    '7. Publicación y handoff',
+    '',
+    `## Checklist de inicio`,
+    '',
+    '- Confirmar dominio y hosting',
+    '- Reunir logo, colores, fotos y textos existentes',
+    '- Confirmar WhatsApp/correo de contacto',
+    '- Confirmar páginas o pantallas necesarias',
+    '- Confirmar integraciones obligatorias',
+    '- Definir fecha realista de entrega',
+    '- Validar anticipo y forma de pago',
+    '',
+    `## Riesgos a validar`,
+    '',
+    '- Contenido incompleto o fotos faltantes',
+    '- Cambios de alcance después de cotizar',
+    '- Integraciones de pago, reservas o terceros no confirmadas',
+    '- Dominio o accesos no disponibles',
+  ].join('\n');
+};
+
+const copyDraftToMarkdown = (brief) => {
+  const p = getProposalData(brief);
+  const cta = p.type === 'Ecommerce' ? 'Comprar ahora' : p.type === 'Web App con Reservas' ? 'Reservar ahora' : 'Contactar por WhatsApp';
+  return [
+    `# Copy inicial - ${p.projectName}`,
+    '',
+    `## Hero`,
+    '',
+    `### Headline`,
+    `${p.projectName}: ${p.mainGoal}`,
+    '',
+    `### Subheadline`,
+    p.clientAbout || `Una experiencia digital clara, rápida y diseñada para convertir visitantes en clientes.`,
+    '',
+    `### CTA principal`,
+    cta,
+    '',
+    `## Secciones sugeridas`,
+    '',
+    '- Inicio',
+    '- Beneficios',
+    '- Servicios o funciones principales',
+    '- Proceso',
+    '- Testimonios o prueba social',
+    '- Preguntas frecuentes',
+    '- Contacto',
+    '',
+    `## Mensajes clave`,
+    '',
+    ...(p.differentiator ? [`- Diferenciador: ${p.differentiator}`] : ['- Comunicar el valor principal de forma directa.']),
+    ...(p.idealClient ? [`- Cliente ideal: ${p.idealClient}`] : ['- Hablarle a un cliente con intención clara de compra/contacto.']),
+    ...(p.city ? [`- Ubicación/mercado: ${p.city}`] : []),
+    '',
+    `## Pendiente de cliente`,
+    '',
+    '- Logo en alta calidad',
+    '- Colores o manual de marca',
+    '- Fotos reales',
+    '- Textos aprobados',
+    '- Links de redes sociales',
+    '- Políticas, términos o avisos si aplican',
+  ].join('\n');
+};
+
+const technicalBriefToMarkdown = (brief) => {
+  const p = getProposalData(brief);
+  const stack = recommendedStack(p.type);
+  return [
+    `# Brief técnico - ${p.projectName}`,
+    '',
+    `## Tipo`,
+    '',
+    p.type,
+    '',
+    `## Stack base`,
+    '',
+    ...stack.map((item) => `- ${item}`),
+    '',
+    `## Datos del cliente`,
+    '',
+    `- Contacto: ${p.contact || 'Pendiente'}`,
+    `- Ciudad: ${p.city || 'Pendiente'}`,
+    `- Presupuesto: ${brief.budget || 'Pendiente'}`,
+    `- Tiempo deseado: ${(brief.data || {}).deadline || 'Pendiente'}`,
+    '',
+    `## Funcionalidades esperadas`,
+    '',
+    ...p.deliverables.map((item) => `- ${item}`),
+    '',
+    ...(p.specificAnswers.length ? ['## Respuestas funcionales', '', ...p.specificAnswers.map(([q, a]) => `### ${q}\n\n${a}\n`)] : []),
+    '',
+    `## Criterios de aceptación`,
+    '',
+    '- La experiencia funciona correctamente en mobile y desktop',
+    '- Los CTAs/contactos funcionan',
+    '- El sitio o app carga sin errores en producción',
+    '- El contenido principal queda editable o documentado según alcance',
+    '- El cliente recibe instrucciones básicas de uso',
+  ].join('\n');
+};
+
+const readmeToMarkdown = (brief) => {
+  const p = getProposalData(brief);
+  return [
+    `# ${p.projectName}`,
+    '',
+    `Kit inicial generado desde FREEWILL.STUDIO para construir: ${p.title}.`,
+    '',
+    `## Archivos`,
+    '',
+    '- `01-brief.md`: respuestas completas del cuestionario',
+    '- `02-propuesta.html`: propuesta comercial lista para PDF',
+    '- `02-propuesta.md`: propuesta editable en Markdown',
+    '- `03-plan-de-proyecto.md`: fases, stack y checklist',
+    '- `04-copy-inicial.md`: textos iniciales y secciones sugeridas',
+    '- `05-brief-tecnico.md`: guía técnica para desarrollo',
+    '- `data/cuestionario.json`: datos originales del formulario',
+    '',
+    `## Siguiente paso`,
+    '',
+    'Revisar alcance, confirmar inversión y crear el repositorio/proyecto base del cliente.',
+  ].join('\n');
+};
+
 const csvEscape = (value) => `"${String(value ?? '').replace(/"/g, '""')}"`;
 
 const flattenBrief = (brief) => {
@@ -374,6 +541,35 @@ const downloadProposal = (brief) => {
   downloadFile(`propuesta-${date}-${slugify(brief.business)}.html`, proposalToHtml(brief), 'text/html;charset=utf-8');
 };
 
+const buildClientKitZip = (zip, brief) => {
+  const slug = slugify(brief.business);
+  const folder = zip.folder(slug);
+  folder.file('README.md', readmeToMarkdown(brief));
+  folder.file('01-brief.md', briefToMarkdown(brief));
+  folder.file('02-propuesta.html', proposalToHtml(brief));
+  folder.file('02-propuesta.md', proposalToMarkdown(brief));
+  folder.file('03-plan-de-proyecto.md', projectPlanToMarkdown(brief));
+  folder.file('04-copy-inicial.md', copyDraftToMarkdown(brief));
+  folder.file('05-brief-tecnico.md', technicalBriefToMarkdown(brief));
+  folder.folder('data').file('cuestionario.json', JSON.stringify(brief, null, 2));
+  return folder;
+};
+
+const downloadClientKit = async (brief) => {
+  const zip = new JSZip();
+  buildClientKitZip(zip, brief);
+  const blob = await zip.generateAsync({ type: 'blob' });
+  const date = new Date().toISOString().slice(0, 10);
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `kit-app-${date}-${slugify(brief.business)}.zip`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+};
+
 const downloadBriefsJson = (rows) => {
   const date = new Date().toISOString().slice(0, 10);
   downloadFile(`cuestionarios-freewill-${date}.json`, JSON.stringify(rows, null, 2), 'application/json;charset=utf-8');
@@ -386,6 +582,7 @@ const downloadBriefsZip = async (rows) => {
     zip.file(`${date}-${slugify(brief.business)}.md`, briefToMarkdown(brief));
     zip.file(`propuesta-${date}-${slugify(brief.business)}.md`, proposalToMarkdown(brief));
     zip.file(`propuesta-${date}-${slugify(brief.business)}.html`, proposalToHtml(brief));
+    buildClientKitZip(zip.folder('kits'), brief);
   });
   zip.file('cuestionarios.json', JSON.stringify(rows, null, 2));
   const blob = await zip.generateAsync({ type: 'blob' });
@@ -436,6 +633,13 @@ export default function Briefs() {
     downloadProposal(brief);
     if (brief.status !== 'cotizado') {
       await update(brief.id, { status: 'cotizado' });
+    }
+  };
+
+  const generateClientKitFromBrief = async (brief) => {
+    await downloadClientKit(brief);
+    if (brief.status === 'nuevo') {
+      await update(brief.id, { status: 'revisado' });
     }
   };
 
@@ -517,6 +721,7 @@ export default function Briefs() {
                       <button onClick={() => setOpen(b)} className="p-1.5 text-ink/[0.55] hover:text-gold" title="Ver"><ChevronDown size={16} /></button>
                       <button onClick={() => downloadBriefMarkdown(b)} className="p-1.5 text-ink/[0.55] hover:text-gold" title="Descargar brief"><Download size={15} /></button>
                       <button onClick={() => generateProposalFromBrief(b)} className="p-1.5 text-ink/[0.55] hover:text-gold" title="Generar propuesta"><FileText size={15} /></button>
+                      <button onClick={() => generateClientKitFromBrief(b)} className="p-1.5 text-ink/[0.55] hover:text-gold" title="Kit inicial de app"><Package size={15} /></button>
                       <button onClick={() => createProjectFromBrief(b)} disabled={busyId === b.id} className="p-1.5 text-ink/[0.55] hover:text-gold disabled:opacity-40" title="Crear proyecto"><FolderPlus size={15} /></button>
                       {b.whatsapp && <a href={`https://wa.me/${b.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noreferrer" className="p-1.5 text-ink/[0.55] hover:text-green-600"><MessageCircle size={15} /></a>}
                       <button onClick={() => window.confirm('¿Eliminar este cuestionario?') && remove(b.id)} className="p-1.5 text-ink/[0.55] hover:text-red-600"><Trash2 size={15} /></button>
@@ -539,6 +744,9 @@ export default function Briefs() {
             </button>
             <button onClick={() => generateProposalFromBrief(open)} className="inline-flex items-center gap-2 border border-ink/[0.25] bg-white px-4 py-2.5 font-condensed text-sm font-black uppercase tracking-[0.12em] text-ink hover:border-gold hover:text-gold">
               <FileText size={16} /> Propuesta
+            </button>
+            <button onClick={() => generateClientKitFromBrief(open)} className="inline-flex items-center gap-2 border border-ink/[0.25] bg-white px-4 py-2.5 font-condensed text-sm font-black uppercase tracking-[0.12em] text-ink hover:border-gold hover:text-gold">
+              <Package size={16} /> Kit app
             </button>
             <button onClick={() => createProjectFromBrief(open)} disabled={busyId === open.id} className="inline-flex items-center gap-2 border border-ink/[0.25] bg-white px-4 py-2.5 font-condensed text-sm font-black uppercase tracking-[0.12em] text-ink hover:border-gold hover:text-gold disabled:opacity-40">
               {busyId === open.id ? <Loader2 size={16} className="animate-spin" /> : <FolderPlus size={16} />} Crear proyecto
