@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import JSZip from 'jszip';
-import { Archive, Download, FileJson, FolderPlus, Loader2, Trash2, MessageCircle, ChevronDown } from 'lucide-react';
+import { Archive, Download, FileJson, FileText, FolderPlus, Loader2, Trash2, MessageCircle, ChevronDown } from 'lucide-react';
 import useCollection from '../useCollection.js';
 import { Badge, Modal } from '../ui.jsx';
 import { GENERAL } from '../../lib/briefQuestions.js';
@@ -15,6 +15,14 @@ const BRIEF_STATUS = {
 const GENERAL_LABELS = Object.fromEntries(GENERAL.map((q) => [q.key, q.label]));
 
 const clean = (value) => String(value || '').trim();
+
+const escapeHtml = (value) =>
+  String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 
 const formatDate = (value) => {
   if (!value) return '';
@@ -76,6 +84,262 @@ const briefToMarkdown = (brief) => {
   ].join('\n');
 };
 
+const proposalDefaults = {
+  'Landing Page': {
+    title: 'Landing page de conversión',
+    timeline: '2 a 3 semanas',
+    objective: 'convertir visitas en contactos, registros o ventas con una experiencia clara y rápida.',
+    deliverables: [
+      'Estructura estratégica de la landing page',
+      'Diseño responsive para celular y escritorio',
+      'Secciones orientadas a conversión',
+      'Integración con WhatsApp, formulario o CTA principal',
+      'Optimización básica de velocidad y SEO técnico',
+      'Publicación en dominio final',
+    ],
+  },
+  'Página Web Profesional': {
+    title: 'Página web profesional',
+    timeline: '3 a 5 semanas',
+    objective: 'presentar la marca con claridad, generar confianza y facilitar nuevos contactos.',
+    deliverables: [
+      'Arquitectura de secciones principales',
+      'Diseño visual alineado a la marca',
+      'Páginas responsive para servicios, información y contacto',
+      'Formulario o enlace directo a WhatsApp',
+      'SEO técnico base y configuración de metadata',
+      'Publicación y revisión final en producción',
+    ],
+  },
+  'Web App con Reservas': {
+    title: 'Web app con reservas',
+    timeline: '5 a 8 semanas',
+    objective: 'automatizar reservas, ordenar disponibilidad y reducir coordinación manual.',
+    deliverables: [
+      'Flujo de reserva para clientes',
+      'Panel básico de administración',
+      'Configuración de servicios, horarios y disponibilidad',
+      'Notificaciones o contacto por WhatsApp según alcance',
+      'Base de datos para reservas y clientes',
+      'Publicación, pruebas y acompañamiento inicial',
+    ],
+  },
+  Ecommerce: {
+    title: 'Ecommerce',
+    timeline: '6 a 10 semanas',
+    objective: 'crear una tienda clara, confiable y preparada para recibir pedidos o pagos.',
+    deliverables: [
+      'Catálogo de productos y categorías',
+      'Vista de producto responsive',
+      'Carrito y flujo de compra',
+      'Configuración de pagos/envíos según alcance',
+      'Panel básico para administración de productos',
+      'Publicación, pruebas de compra y capacitación inicial',
+    ],
+  },
+  'Sistema Interno': {
+    title: 'Sistema interno',
+    timeline: '6 a 12 semanas',
+    objective: 'ordenar procesos internos y centralizar información operativa.',
+    deliverables: [
+      'Análisis del proceso actual',
+      'Diseño de flujos y roles de usuario',
+      'Panel interno responsive',
+      'Base de datos para operación diaria',
+      'Reportes o vistas de seguimiento según alcance',
+      'Pruebas, ajustes y documentación de uso',
+    ],
+  },
+  'App Web Personalizada': {
+    title: 'App web personalizada',
+    timeline: '6 a 12 semanas',
+    objective: 'convertir la idea en una aplicación web funcional, escalable y usable.',
+    deliverables: [
+      'Definición de alcance y MVP',
+      'Diseño de experiencia y pantallas clave',
+      'Desarrollo frontend responsive',
+      'Backend/base de datos según funcionalidades',
+      'Integraciones requeridas según alcance',
+      'Pruebas, publicación y soporte inicial',
+    ],
+  },
+};
+
+const budgetCopy = (budget) => {
+  if (!budget || budget === 'Aún no lo sé') return 'Inversión por definir después de validar alcance, prioridad y funcionalidades exactas.';
+  return `Rango de inversión declarado por el cliente: ${budget}. La cotización final se ajusta al alcance aprobado.`;
+};
+
+const getProposalData = (brief) => {
+  const d = brief.data || {};
+  const general = d.general || {};
+  const specificAnswers = Object.entries(d.specifics || {}).filter(([, value]) => clean(value));
+  const type = brief.page_type || 'App Web Personalizada';
+  const defaults = proposalDefaults[type] || proposalDefaults['App Web Personalizada'];
+  const projectName = clean(brief.business) || 'Proyecto web';
+  const mainGoal = clean(general.goal) || defaults.objective;
+  const clientAbout = clean(general.about);
+
+  return {
+    type,
+    title: defaults.title,
+    projectName,
+    contact: clean(brief.contact_name),
+    date: new Date().toLocaleDateString('es-MX', { dateStyle: 'long' }),
+    city: clean(d.city),
+    mainGoal,
+    clientAbout,
+    timeline: clean(d.deadline) ? `${defaults.timeline}. Fecha deseada por cliente: ${clean(d.deadline)}.` : defaults.timeline,
+    investment: budgetCopy(brief.budget),
+    deliverables: defaults.deliverables,
+    differentiator: clean(general.differentiator),
+    idealClient: clean(general.ideal_client),
+    brand: clean(general.brand),
+    references: clean(general.references),
+    domain: clean(general.domain),
+    content: clean(general.content),
+    extra: clean(d.extra),
+    specificAnswers,
+  };
+};
+
+const proposalToMarkdown = (brief) => {
+  const p = getProposalData(brief);
+  const context = [
+    p.clientAbout && `- Sobre el negocio: ${p.clientAbout}`,
+    p.idealClient && `- Cliente ideal: ${p.idealClient}`,
+    p.differentiator && `- Diferenciador: ${p.differentiator}`,
+    p.brand && `- Marca: ${p.brand}`,
+    p.references && `- Referencias: ${p.references}`,
+    p.domain && `- Dominio: ${p.domain}`,
+    p.content && `- Contenido: ${p.content}`,
+    p.extra && `- Comentarios adicionales: ${p.extra}`,
+  ].filter(Boolean);
+
+  return [
+    `# Propuesta comercial - ${p.projectName}`,
+    '',
+    `FREEWILL.STUDIO · ${p.date}`,
+    '',
+    `## Proyecto`,
+    '',
+    `Propuesta para desarrollar una ${p.title.toLowerCase()} para ${p.projectName}.`,
+    '',
+    `## Objetivo`,
+    '',
+    p.mainGoal,
+    '',
+    `## Alcance propuesto`,
+    '',
+    ...p.deliverables.map((item) => `- ${item}`),
+    '',
+    ...(context.length ? ['## Contexto recibido', '', ...context, ''] : []),
+    ...(p.specificAnswers.length ? ['## Respuestas clave', '', ...p.specificAnswers.map(([q, a]) => `- ${q}: ${a}`), ''] : []),
+    `## Tiempo estimado`,
+    '',
+    p.timeline,
+    '',
+    `## Inversión`,
+    '',
+    p.investment,
+    '',
+    `## Forma de trabajo`,
+    '',
+    '- Inicio con definición de alcance y estructura.',
+    '- Diseño de experiencia visual y revisión contigo.',
+    '- Desarrollo, pruebas y ajustes.',
+    '- Publicación final y acompañamiento inicial.',
+    '',
+    `## Próximo paso`,
+    '',
+    'Confirmar alcance, prioridad y fecha de inicio para preparar la cotización final y calendario de trabajo.',
+  ].join('\n');
+};
+
+const proposalToHtml = (brief) => {
+  const p = getProposalData(brief);
+  const list = (items) => items.map((item) => `<li>${escapeHtml(item)}</li>`).join('');
+  const context = [
+    ['Sobre el negocio', p.clientAbout],
+    ['Cliente ideal', p.idealClient],
+    ['Diferenciador', p.differentiator],
+    ['Marca', p.brand],
+    ['Referencias', p.references],
+    ['Dominio', p.domain],
+    ['Contenido', p.content],
+    ['Comentarios adicionales', p.extra],
+  ].filter(([, value]) => clean(value));
+
+  return `<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Propuesta - ${escapeHtml(p.projectName)}</title>
+  <style>
+    :root { color: #111; background: #f4f1ea; font-family: Inter, Arial, sans-serif; }
+    body { margin: 0; padding: 36px; }
+    main { max-width: 860px; margin: 0 auto; background: #fff; border: 1px solid #111; }
+    header { padding: 44px; border-bottom: 1px solid #111; background: #111; color: #f4f1ea; }
+    section { padding: 28px 44px; border-bottom: 1px solid rgba(17,17,17,.12); }
+    h1, h2, p { margin: 0; }
+    h1 { font-size: 42px; line-height: .95; text-transform: uppercase; letter-spacing: 0; }
+    h2 { margin-bottom: 14px; font-size: 14px; text-transform: uppercase; letter-spacing: .12em; color: #b87905; }
+    p, li { font-size: 15px; line-height: 1.7; }
+    ul { margin: 0; padding-left: 20px; }
+    .meta { margin-top: 18px; color: rgba(244,241,234,.72); font-size: 13px; }
+    .grid { display: grid; gap: 16px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .box { border: 1px solid rgba(17,17,17,.18); padding: 16px; }
+    .label { margin-bottom: 5px; font-size: 11px; text-transform: uppercase; letter-spacing: .12em; color: rgba(17,17,17,.52); font-weight: 700; }
+    .footer { color: rgba(17,17,17,.58); }
+    @media print { body { padding: 0; background: #fff; } main { border: 0; } }
+    @media (max-width: 720px) { body { padding: 14px; } header, section { padding: 24px; } h1 { font-size: 31px; } .grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p>FREEWILL.STUDIO</p>
+      <h1>Propuesta para ${escapeHtml(p.projectName)}</h1>
+      <p class="meta">${escapeHtml(p.title)} · ${escapeHtml(p.date)}${p.contact ? ` · Contacto: ${escapeHtml(p.contact)}` : ''}</p>
+    </header>
+    <section>
+      <h2>Objetivo</h2>
+      <p>${escapeHtml(p.mainGoal)}</p>
+    </section>
+    <section>
+      <h2>Alcance propuesto</h2>
+      <ul>${list(p.deliverables)}</ul>
+    </section>
+    <section>
+      <div class="grid">
+        <div class="box"><p class="label">Tiempo estimado</p><p>${escapeHtml(p.timeline)}</p></div>
+        <div class="box"><p class="label">Inversión</p><p>${escapeHtml(p.investment)}</p></div>
+      </div>
+    </section>
+    ${context.length ? `<section><h2>Contexto recibido</h2><div class="grid">${context.map(([label, value]) => `<div class="box"><p class="label">${escapeHtml(label)}</p><p>${escapeHtml(value)}</p></div>`).join('')}</div></section>` : ''}
+    ${p.specificAnswers.length ? `<section><h2>Respuestas clave</h2><ul>${p.specificAnswers.map(([q, a]) => `<li><strong>${escapeHtml(q)}:</strong> ${escapeHtml(a)}</li>`).join('')}</ul></section>` : ''}
+    <section>
+      <h2>Forma de trabajo</h2>
+      <ul>
+        <li>Definición de alcance y estructura.</li>
+        <li>Diseño de experiencia visual y revisión contigo.</li>
+        <li>Desarrollo, pruebas y ajustes.</li>
+        <li>Publicación final y acompañamiento inicial.</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Próximo paso</h2>
+      <p>Confirmar alcance, prioridad y fecha de inicio para preparar la cotización final y calendario de trabajo.</p>
+    </section>
+    <section class="footer">
+      <p>Esta propuesta se genera a partir del cuestionario recibido. La cotización final puede ajustarse si cambia el alcance, integraciones, contenido o tiempos de entrega.</p>
+    </section>
+  </main>
+</body>
+</html>`;
+};
+
 const csvEscape = (value) => `"${String(value ?? '').replace(/"/g, '""')}"`;
 
 const flattenBrief = (brief) => {
@@ -105,6 +369,11 @@ const downloadBriefMarkdown = (brief) => {
   downloadFile(`${date}-${slugify(brief.business)}.md`, briefToMarkdown(brief), 'text/markdown;charset=utf-8');
 };
 
+const downloadProposal = (brief) => {
+  const date = new Date().toISOString().slice(0, 10);
+  downloadFile(`propuesta-${date}-${slugify(brief.business)}.html`, proposalToHtml(brief), 'text/html;charset=utf-8');
+};
+
 const downloadBriefsJson = (rows) => {
   const date = new Date().toISOString().slice(0, 10);
   downloadFile(`cuestionarios-freewill-${date}.json`, JSON.stringify(rows, null, 2), 'application/json;charset=utf-8');
@@ -115,6 +384,8 @@ const downloadBriefsZip = async (rows) => {
   rows.forEach((brief) => {
     const date = brief.created_at ? new Date(brief.created_at).toISOString().slice(0, 10) : 'sin-fecha';
     zip.file(`${date}-${slugify(brief.business)}.md`, briefToMarkdown(brief));
+    zip.file(`propuesta-${date}-${slugify(brief.business)}.md`, proposalToMarkdown(brief));
+    zip.file(`propuesta-${date}-${slugify(brief.business)}.html`, proposalToHtml(brief));
   });
   zip.file('cuestionarios.json', JSON.stringify(rows, null, 2));
   const blob = await zip.generateAsync({ type: 'blob' });
@@ -160,6 +431,13 @@ export default function Briefs() {
   const { insert: insertProject } = useCollection('projects');
   const [open, setOpen] = useState(null);
   const [busyId, setBusyId] = useState('');
+
+  const generateProposalFromBrief = async (brief) => {
+    downloadProposal(brief);
+    if (brief.status !== 'cotizado') {
+      await update(brief.id, { status: 'cotizado' });
+    }
+  };
 
   const createProjectFromBrief = async (brief) => {
     const projectName = clean(brief.business) || `Proyecto ${clean(brief.page_type) || 'web'}`;
@@ -238,6 +516,7 @@ export default function Briefs() {
                     <div className="flex justify-end gap-1">
                       <button onClick={() => setOpen(b)} className="p-1.5 text-ink/[0.55] hover:text-gold" title="Ver"><ChevronDown size={16} /></button>
                       <button onClick={() => downloadBriefMarkdown(b)} className="p-1.5 text-ink/[0.55] hover:text-gold" title="Descargar brief"><Download size={15} /></button>
+                      <button onClick={() => generateProposalFromBrief(b)} className="p-1.5 text-ink/[0.55] hover:text-gold" title="Generar propuesta"><FileText size={15} /></button>
                       <button onClick={() => createProjectFromBrief(b)} disabled={busyId === b.id} className="p-1.5 text-ink/[0.55] hover:text-gold disabled:opacity-40" title="Crear proyecto"><FolderPlus size={15} /></button>
                       {b.whatsapp && <a href={`https://wa.me/${b.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noreferrer" className="p-1.5 text-ink/[0.55] hover:text-green-600"><MessageCircle size={15} /></a>}
                       <button onClick={() => window.confirm('¿Eliminar este cuestionario?') && remove(b.id)} className="p-1.5 text-ink/[0.55] hover:text-red-600"><Trash2 size={15} /></button>
@@ -257,6 +536,9 @@ export default function Briefs() {
           <div className="mt-5 flex flex-wrap gap-2">
             <button onClick={() => downloadBriefMarkdown(open)} className="inline-flex items-center gap-2 border border-ink bg-ink px-4 py-2.5 font-condensed text-sm font-black uppercase tracking-[0.12em] text-paper hover:bg-gold hover:text-white">
               <Download size={16} /> Descargar brief
+            </button>
+            <button onClick={() => generateProposalFromBrief(open)} className="inline-flex items-center gap-2 border border-ink/[0.25] bg-white px-4 py-2.5 font-condensed text-sm font-black uppercase tracking-[0.12em] text-ink hover:border-gold hover:text-gold">
+              <FileText size={16} /> Propuesta
             </button>
             <button onClick={() => createProjectFromBrief(open)} disabled={busyId === open.id} className="inline-flex items-center gap-2 border border-ink/[0.25] bg-white px-4 py-2.5 font-condensed text-sm font-black uppercase tracking-[0.12em] text-ink hover:border-gold hover:text-gold disabled:opacity-40">
               {busyId === open.id ? <Loader2 size={16} className="animate-spin" /> : <FolderPlus size={16} />} Crear proyecto
