@@ -19,8 +19,21 @@ const Briefs = lazy(() => import('./admin/pages/Briefs.jsx'));
 
 function RouteFallback() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-paper font-condensed text-sm font-black uppercase tracking-[0.16em] text-ink/[0.55]">
-      Cargando
+    <div className="flex min-h-screen flex-col items-center justify-center bg-paper text-ink">
+      <div className="relative flex flex-col items-center gap-4">
+        {/* Mira cibernética con núcleo dorado pulsante */}
+        <div className="relative h-12 w-12 border border-ink/[0.15]">
+          <div className="absolute inset-0.5 border border-dashed border-ink/[0.3] animate-spin" style={{ animationDuration: '8s' }} />
+          <div className="absolute inset-2 bg-gold animate-pulse" />
+          <div className="absolute -top-1 -left-1 h-2 w-2 border-t-2 border-l-2 border-ink" />
+          <div className="absolute -top-1 -right-1 h-2 w-2 border-t-2 border-r-2 border-ink" />
+          <div className="absolute -bottom-1 -left-1 h-2 w-2 border-b-2 border-l-2 border-ink" />
+          <div className="absolute -bottom-1 -right-1 h-2 w-2 border-b-2 border-r-2 border-ink" />
+        </div>
+        <span className="font-condensed text-xs font-black uppercase tracking-[0.2em] text-ink/70 animate-pulse">
+          Estableciendo enlace...
+        </span>
+      </div>
     </div>
   );
 }
