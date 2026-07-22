@@ -25,11 +25,64 @@ import { cardHover, fadeUp, staggerContainer } from './motion.js';
 const conversionIcons = [Eye, MessageSquare, MousePointerClick, RefreshCcw, TrendingUp];
 
 export default function App() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   useSmoothScroll();
+
   useEffect(() => {
     trackPageview();
   }, []);
+
+  // Metadatos dinámicos SEO y Open Graph de la Landing Page
+  useEffect(() => {
+    if (t.seo) {
+      document.title = t.seo.title;
+
+      // Meta descripción
+      let metaDesc = document.querySelector('meta[name="description"]');
+      if (!metaDesc) {
+        metaDesc = document.createElement('meta');
+        metaDesc.name = 'description';
+        document.head.appendChild(metaDesc);
+      }
+      metaDesc.content = t.seo.description;
+
+      // Meta keywords
+      let metaKeywords = document.querySelector('meta[name="keywords"]');
+      if (!metaKeywords) {
+        metaKeywords = document.createElement('meta');
+        metaKeywords.name = 'keywords';
+        document.head.appendChild(metaKeywords);
+      }
+      metaKeywords.content = t.seo.keywords;
+
+      // OpenGraph Title
+      let ogTitle = document.querySelector('meta[property="og:title"]');
+      if (!ogTitle) {
+        ogTitle = document.createElement('meta');
+        ogTitle.setAttribute('property', 'og:title');
+        document.head.appendChild(ogTitle);
+      }
+      ogTitle.content = t.seo.title;
+
+      // OpenGraph Description
+      let ogDesc = document.querySelector('meta[property="og:description"]');
+      if (!ogDesc) {
+        ogDesc = document.createElement('meta');
+        ogDesc.setAttribute('property', 'og:description');
+        document.head.appendChild(ogDesc);
+      }
+      ogDesc.content = t.seo.description;
+
+      // OpenGraph Locale
+      let ogLocale = document.querySelector('meta[property="og:locale"]');
+      if (!ogLocale) {
+        ogLocale = document.createElement('meta');
+        ogLocale.setAttribute('property', 'og:locale');
+        document.head.appendChild(ogLocale);
+      }
+      ogLocale.content = lang === 'es' ? 'es_MX' : 'en_US';
+    }
+  }, [t, lang]);
 
   return (
     <div className="studio-page min-h-screen overflow-hidden text-ink">

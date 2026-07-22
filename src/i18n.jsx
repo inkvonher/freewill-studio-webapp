@@ -2,7 +2,12 @@ import { createContext, useContext, useEffect, useState } from 'react';
 
 const STR = {
   es: {
-    nav: { servicios: 'Servicios', proyectos: 'Proyectos', proceso: 'Proceso', faq: 'FAQ', contacto: 'Contacto', cta: 'Cotizar' },
+    seo: {
+      title: 'FREEWILL.STUDIO · Páginas Web & Web Apps Premium',
+      description: 'Diseño consciente. Tecnología con propósito. Desarrollamos páginas web, web apps, reservas automatizadas y sistemas digitales premium que escalan tu negocio.',
+      keywords: 'diseño web, desarrollo web, web app, programacion, automatizacion, chatbot, ecommerce, veracruz, mexico, premium',
+    },
+    nav: { servicios: 'Servicios', y: 'y', proyectos: 'Proyectos', proceso: 'Proceso', faq: 'FAQ', contacto: 'Contacto', cta: 'Cotizar' },
     hero: {
       tagline: 'Libre albedrío crea tu realidad.',
       title: 'Web apps que trabajan por tu negocio',
@@ -108,7 +113,12 @@ const STR = {
   },
 
   en: {
-    nav: { servicios: 'Services', proyectos: 'Projects', proceso: 'Process', faq: 'FAQ', contacto: 'Contact', cta: 'Get a quote' },
+    seo: {
+      title: 'FREEWILL.STUDIO · Premium Websites & Web Apps',
+      description: 'Conscious design. Purpose-driven technology. We develop premium websites, web apps, automated booking systems, and custom digital systems to scale your business.',
+      keywords: 'web design, web development, web app, programming, automation, chatbot, ecommerce, premium, mexico',
+    },
+    nav: { servicios: 'Services', y: 'and', proyectos: 'Proyectos', proceso: 'Process', faq: 'FAQ', contacto: 'Contact', cta: 'Get a quote' },
     hero: {
       tagline: 'Free will creates your reality.',
       title: 'Web apps that work for your business',
