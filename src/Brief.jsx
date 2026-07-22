@@ -35,11 +35,22 @@ export default function Brief() {
       return;
     }
 
+    // Validación y formateo de WhatsApp (limpiar no-dígitos, asumir prefijo +52 si tiene 10 dígitos)
+    const rawPhone = base.whatsapp || '';
+    const digits = rawPhone.replace(/\D/g, '');
+    const cleanedPhone = digits.length === 10 ? '52' + digits : digits;
+
+    if (cleanedPhone.length < 10 || cleanedPhone.length > 15) {
+      setError('Por favor ingresa un número de WhatsApp válido (10 dígitos con lada, ej. +52 1...)');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
     if (!supabaseReady) { setError('El formulario no está disponible por ahora. Escríbenos por WhatsApp.'); return; }
     setBusy(true);
     const payload = {
       page_type: pageType, business: base.business, contact_name: base.contact_name,
-      whatsapp: base.whatsapp, email: base.email || null, budget: base.budget || null,
+      whatsapp: cleanedPhone, email: base.email || null, budget: base.budget || null,
       data: {
         instagram: base.instagram, city: base.city, deadline: base.deadline, extra: base.extra,
         general, specifics,

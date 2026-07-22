@@ -51,7 +51,27 @@ export default function Leads() {
   const save = async (e) => {
     e.preventDefault();
     setBusy(true);
-    const payload = { business: form.business, type: form.type, phone: form.phone || null, instagram: form.instagram || null, status: form.status, last_contact: form.last_contact || null, notes: form.notes || null };
+
+    // Limpieza y validación de teléfono (WhatsApp)
+    const rawPhone = form.phone || '';
+    const digits = rawPhone.replace(/\D/g, '');
+    const cleanedPhone = digits.length === 10 ? '52' + digits : digits;
+
+    if (rawPhone && (cleanedPhone.length < 10 || cleanedPhone.length > 15)) {
+      showToast('Por favor ingresa un número de teléfono válido (10 dígitos o con lada).', 'error');
+      setBusy(false);
+      return;
+    }
+
+    const payload = {
+      business: form.business,
+      type: form.type,
+      phone: cleanedPhone || null,
+      instagram: form.instagram || null,
+      status: form.status,
+      last_contact: form.last_contact || null,
+      notes: form.notes || null
+    };
     
     let err;
     if (editing) {
