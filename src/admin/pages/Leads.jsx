@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, Pencil, Trash2, MessageCircle, Loader2 } from 'lucide-react';
+import { Plus, Pencil, Trash2, MessageCircle, FolderPlus, Loader2 } from 'lucide-react';
 import useCollection from '../useCollection.js';
 import { Badge, Field, Modal, LEAD_STATUS, inputCls } from '../ui.jsx';
 
@@ -8,10 +8,39 @@ const empty = { business: '', type: TYPES[0], phone: '', instagram: '', status: 
 
 export default function Leads() {
   const { rows, loading, insert, update, remove } = useCollection('leads');
+  const { insert: insertProject } = useCollection('projects');
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState(empty);
   const [editing, setEditing] = useState(null);
   const [busy, setBusy] = useState(false);
+  const [busyId, setBusyId] = useState('');
+
+  const createProjectFromLead = async (lead) => {
+    const projectName = lead.business || 'Proyecto nuevo';
+    if (!window.confirm(`¿Crear proyecto en espera para el prospecto "${projectName}"?`)) return;
+
+    setBusyId(lead.id);
+    const err = await insertProject({
+      name: projectName,
+      client: lead.business,
+      type: 'App Web Personalizada',
+      status: 'espera',
+      price: 0,
+      currency: 'MXN',
+      url: null,
+      started_at: null,
+      delivered_at: null,
+      notes: lead.notes ? `Creado desde prospecto.\nNotas anteriores:\n${lead.notes}` : 'Creado desde prospecto.',
+    });
+
+    if (!err) {
+      await update(lead.id, { status: 'cliente' });
+      window.alert(`¡Proyecto creado con éxito! El estado del prospecto cambió a "Cliente".`);
+    } else {
+      window.alert(`No se pudo crear el proyecto: ${err.message}`);
+    }
+    setBusyId('');
+  };
 
   const openNew = () => { setForm(empty); setEditing(null); setOpen(true); };
   const openEdit = (l) => { setForm({ ...empty, ...l, last_contact: l.last_contact || '' }); setEditing(l.id); setOpen(true); };
@@ -64,6 +93,16 @@ export default function Leads() {
                   <td className="p-3">
                     <div className="flex justify-end gap-1">
                       {l.phone && <a href={waLink(l)} target="_blank" rel="noreferrer" className="p-1.5 text-ink/[0.55] hover:text-green-600" title="WhatsApp"><MessageCircle size={15} /></a>}
+                      {l.status !== 'cliente' && (
+                        <button
+                          onClick={() => createProjectFromLead(l)}
+                          disabled={busyId === l.id}
+                          className="p-1.5 text-ink/[0.55] hover:text-gold disabled:opacity-40"
+                          title="Convertir en proyecto"
+                        >
+                          <FolderPlus size={15} />
+                        </button>
+                      )}
                       <button onClick={() => openEdit(l)} className="p-1.5 text-ink/[0.55] hover:text-gold"><Pencil size={15} /></button>
                       <button onClick={() => window.confirm('¿Eliminar este prospecto?') && remove(l.id)} className="p-1.5 text-ink/[0.55] hover:text-red-600"><Trash2 size={15} /></button>
                     </div>
