@@ -44,7 +44,7 @@ export function Stat({ label, value, sub, accent }) {
   );
 }
 
-export function Modal({ title, onClose, children }) {
+export function Modal({ title, onClose, children, className = 'max-w-lg' }) {
   useEffect(() => {
     const onKey = (e) => e.key === 'Escape' && onClose();
     window.addEventListener('keydown', onKey);
@@ -54,7 +54,7 @@ export function Modal({ title, onClose, children }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-ink/[0.6]" onClick={onClose} aria-hidden="true" />
-      <div className="relative max-h-[88vh] w-full max-w-lg overflow-y-auto border border-ink bg-paper">
+      <div className={`relative max-h-[88vh] w-full overflow-y-auto border border-ink bg-paper ${className}`}>
         <div className="flex items-center justify-between border-b border-ink bg-white px-5 py-4">
           <h3 className="font-condensed text-xl font-black uppercase leading-none text-ink">{title}</h3>
           <button onClick={onClose} className="flex h-9 w-9 items-center justify-center border border-ink hover:bg-gold hover:text-white" aria-label="Cerrar">

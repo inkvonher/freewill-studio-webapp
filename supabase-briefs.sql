@@ -29,3 +29,7 @@ create policy "auth update briefs" on public.briefs
   for update using (auth.role() = 'authenticated') with check (auth.role() = 'authenticated');
 create policy "auth delete briefs" on public.briefs
   for delete using (auth.role() = 'authenticated');
+
+-- ---------- ÍNDICES DE RENDIMIENTO ----------
+create index if not exists idx_briefs_status on public.briefs(status);
+create index if not exists idx_briefs_created_at on public.briefs(created_at desc);

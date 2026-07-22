@@ -11,6 +11,7 @@ export default function Brief() {
   const [base, setBase] = useState({ business: '', contact_name: '', whatsapp: '', email: '', instagram: '', city: '', budget: '', deadline: '', extra: '' });
   const [general, setGeneral] = useState({});
   const [specifics, setSpecifics] = useState({});
+  const [honeypot, setHoneypot] = useState('');
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState('');
@@ -22,6 +23,18 @@ export default function Brief() {
   const submit = async (e) => {
     e.preventDefault();
     setError('');
+
+    // Si el honeypot está lleno, simulamos éxito para desviar bots
+    if (honeypot) {
+      setBusy(true);
+      setTimeout(() => {
+        setBusy(false);
+        setDone(true);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 600);
+      return;
+    }
+
     if (!supabaseReady) { setError('El formulario no está disponible por ahora. Escríbenos por WhatsApp.'); return; }
     setBusy(true);
     const payload = {
@@ -67,6 +80,20 @@ export default function Brief() {
       </header>
 
       <form onSubmit={submit} className="mx-auto max-w-3xl px-4 py-8">
+        {/* Campo honeypot oculto para evitar spam de bots */}
+        <div style={{ position: 'absolute', left: '-9999px', opacity: 0, width: 0, height: 0, overflow: 'hidden' }} aria-hidden="true">
+          <label htmlFor="website_hp">No completar este campo</label>
+          <input
+            id="website_hp"
+            type="text"
+            name="website_hp"
+            value={honeypot}
+            onChange={(e) => setHoneypot(e.target.value)}
+            tabIndex="-1"
+            autoComplete="off"
+          />
+        </div>
+
         <p className="mb-8 text-sm leading-7 text-ink/[0.6]">
           Cuéntanos sobre tu proyecto y preparamos una propuesta a tu medida. Responde lo que puedas; lo que no sepas, lo vemos juntos.
         </p>

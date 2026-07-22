@@ -72,3 +72,9 @@ create policy "anyone insert pageviews" on public.pageviews
   for insert with check (true);
 create policy "auth read pageviews" on public.pageviews
   for select using (auth.role() = 'authenticated');
+
+-- ---------- ÍNDICES DE RENDIMIENTO ----------
+create index if not exists idx_pageviews_created_at on public.pageviews(created_at desc);
+create index if not exists idx_payments_paid_at on public.payments(paid_at desc);
+create index if not exists idx_projects_status on public.projects(status);
+create index if not exists idx_leads_status on public.leads(status);

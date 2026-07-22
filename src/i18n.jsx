@@ -104,7 +104,7 @@ const STR = {
       privacyPre: 'Al enviar aceptas nuestro',
       privacyLink: 'Aviso de Privacidad',
     },
-    footer: { tagline: 'FREEWILL.STUDIO — Diseño consciente. Tecnología con propósito.', rights: 'Todos los derechos reservados.', privacy: 'Aviso de Privacidad' },
+    footer: { tagline: 'DISEÑO CONSCIENTE. TECNOLOGÍA CON PROPÓSITO', rights: 'Todos los derechos reservados.', privacy: 'Aviso de Privacidad' },
   },
 
   en: {
@@ -210,7 +210,7 @@ const STR = {
       privacyPre: 'By submitting you accept our',
       privacyLink: 'Privacy Notice',
     },
-    footer: { tagline: 'FREEWILL.STUDIO — Conscious design. Technology with purpose.', rights: 'All rights reserved.', privacy: 'Privacy Notice' },
+    footer: { tagline: 'CONSCIOUS DESIGN. TECHNOLOGY WITH PURPOSE', rights: 'All rights reserved.', privacy: 'Privacy Notice' },
   },
 };
 

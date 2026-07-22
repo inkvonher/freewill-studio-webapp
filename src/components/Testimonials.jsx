@@ -6,6 +6,7 @@ import { cardHover, fadeUp, staggerContainer } from '../motion.js';
 
 export default function Testimonials() {
   const { t } = useLang();
+  const cols = testimonials.length >= 3 ? 'sm:grid-cols-2 lg:grid-cols-3' : testimonials.length === 2 ? 'sm:grid-cols-2' : '';
   return (
     <motion.section id="testimonios" className="section-shell" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }}>
       <div className="section-heading">
@@ -14,17 +15,17 @@ export default function Testimonials() {
         <p>{t.testimonials.p}</p>
       </div>
 
-      <motion.div className="grid gap-px overflow-hidden border border-ink bg-ink sm:grid-cols-2 lg:grid-cols-3" variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }}>
-        {testimonials.map((t) => (
-          <motion.article key={t.name} variants={fadeUp} whileHover={cardHover} className="group flex flex-col bg-paper p-6 transition hover:bg-white">
+      <motion.div className={`grid gap-px overflow-hidden border border-ink bg-ink ${cols}`} variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }}>
+        {testimonials.map((item) => (
+          <motion.article key={item.name} variants={fadeUp} whileHover={cardHover} className="group flex flex-col bg-paper p-6 transition hover:bg-white">
             <Quote className="text-gold" size={30} strokeWidth={1.6} />
             <div className="mt-3 flex gap-0.5">
               {Array.from({ length: 5 }).map((_, i) => <Star key={i} size={14} className="text-gold" fill="currentColor" strokeWidth={0} />)}
             </div>
-            <p className="mt-4 flex-1 text-sm leading-7 text-ink/[0.78]">“{t.quote}”</p>
+            <p className="mt-4 flex-1 text-sm leading-7 text-ink/[0.78]">“{item.quote}”</p>
             <div className="mt-6 border-t border-dashed border-ink/[0.3] pt-4">
-              <p className="font-condensed text-xl font-black uppercase leading-none text-ink">{t.name}</p>
-              <p className="mt-1.5 text-xs text-ink/[0.55]">{t.role}</p>
+              <p className="font-condensed text-xl font-black uppercase leading-none text-ink">{item.name}</p>
+              <p className="mt-1.5 text-xs text-ink/[0.55]">{item.role}</p>
             </div>
           </motion.article>
         ))}

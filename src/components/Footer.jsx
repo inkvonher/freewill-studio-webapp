@@ -16,7 +16,15 @@ export default function Footer() {
             </span>
           </div>
           <p className="font-condensed text-sm font-black uppercase tracking-[0.18em]">
-            {t.footer.tagline}
+            {t.footer.tagline}{' '}
+            <a
+              href="https://www.freewillstudiotech.com"
+              target="_blank"
+              rel="noreferrer"
+              className="text-gold hover:underline normal-case tracking-normal"
+            >
+              www.freewillstudiotech.com
+            </a>
           </p>
         </div>
         <div className="flex flex-col gap-2 border-t border-ink/[0.15] pt-5 sm:flex-row sm:items-center sm:justify-between">

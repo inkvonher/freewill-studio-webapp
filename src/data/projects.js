@@ -14,4 +14,18 @@ export const projects = [
     image: 'KC',
     url: 'https://karencardiel.com/',
   },
+  {
+    name: 'CumpleMX',
+    type: 'App Web Personalizada',
+    description: 'Aplicación para gestionar invitaciones digitales interactivas, confirmación de asistencia RSVP en tiempo real y detalles de eventos.',
+    image: 'CM',
+    url: 'https://www.cumplemx.app/',
+  },
+  {
+    name: 'Festival Cocinas del Mundo',
+    type: 'Página Web Profesional',
+    description: 'Sitio de presentación y agenda para festival gastronómico con listado de expositores, calendario de eventos y mapas de ubicación.',
+    image: 'FC',
+    url: 'https://www.cocinasdelmundofestival.com/',
+  },
 ];
