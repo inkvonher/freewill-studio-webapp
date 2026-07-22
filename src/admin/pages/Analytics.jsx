@@ -61,7 +61,7 @@ export default function Analytics() {
 
       <Card className="mb-5">
         <p className="mb-3 font-condensed text-sm font-black uppercase tracking-[0.14em] text-ink/[0.55]">Visitas por día · últimos 14 días</p>
-        <BarChart data={daily} />
+        <BarChart data={daily} suffix=" visitas" />
         <BarLabels data={daily} />
       </Card>
 

@@ -73,7 +73,7 @@ export default function Finance() {
 
       <Card className="mb-5">
         <p className="mb-3 font-condensed text-sm font-black uppercase tracking-[0.14em] text-ink/[0.55]">Ingresos · últimos 6 meses</p>
-        <LineChart data={chart} />
+        <LineChart data={chart} prefix="$" suffix=" MXN" />
         <div className="mt-1 flex">{chart.map((c, i) => <span key={i} className="flex-1 text-center text-[10px] text-ink/[0.5]">{c.label}</span>)}</div>
       </Card>
 

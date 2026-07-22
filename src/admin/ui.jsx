@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { X } from 'lucide-react';
 
 export const money = (n, currency = 'MXN') =>
@@ -79,20 +79,73 @@ export function Field({ label, children }) {
 export const inputCls = 'w-full border border-ink/[0.4] bg-white px-3 py-2 text-sm outline-none focus:border-gold';
 
 // ---- Gráfica de barras SVG ----
-export function BarChart({ data, height = 180, color = '#b87905' }) {
+export function BarChart({ data, height = 180, color = '#b87905', prefix = '', suffix = '' }) {
+  const [hovered, setHovered] = useState(null);
   const max = Math.max(1, ...data.map((d) => d.value));
   const bw = 100 / (data.length || 1);
+  const containerRef = useRef(null);
+
+  const handleMouseMove = (e, d, i, h) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = ((i * bw + bw * 0.5) / 100) * rect.width;
+    const y = ((height / 2 - 8 - h) / (height / 2)) * rect.height - 10;
+    setHovered({ label: d.label, value: d.value, x, y });
+  };
+
   return (
-    <svg viewBox={`0 0 100 ${height / 2}`} preserveAspectRatio="none" className="w-full" style={{ height }}>
-      {data.map((d, i) => {
-        const h = (d.value / max) * (height / 2 - 14);
-        return (
-          <g key={d.label + i}>
-            <rect x={i * bw + bw * 0.18} y={height / 2 - 8 - h} width={bw * 0.64} height={Math.max(h, 0.4)} fill={color} rx="0.6" />
-          </g>
-        );
-      })}
-    </svg>
+    <div ref={containerRef} className="relative w-full">
+      <svg viewBox={`0 0 100 ${height / 2}`} preserveAspectRatio="none" className="w-full" style={{ height }}>
+        {/* Líneas de cuadrícula sutiles */}
+        <line x1="0" y1={height / 2 - 8} x2="100" y2={height / 2 - 8} stroke="rgba(17,17,17,0.12)" strokeWidth="0.25" />
+        <line x1="0" y1={(height / 2 - 8) * 0.5} x2="100" y2={(height / 2 - 8) * 0.5} stroke="rgba(17,17,17,0.06)" strokeWidth="0.25" strokeDasharray="1 1" />
+
+        {data.map((d, i) => {
+          const h = (d.value / max) * (height / 2 - 14);
+          const barHeight = Math.max(h, 0.4);
+          const xPos = i * bw + bw * 0.18;
+          const yPos = height / 2 - 8 - h;
+
+          return (
+            <g key={d.label + i}>
+              {/* Zona interactiva transparente */}
+              <rect
+                x={i * bw}
+                y={0}
+                width={bw}
+                height={height / 2}
+                fill="transparent"
+                className="cursor-pointer"
+                onMouseEnter={(e) => handleMouseMove(e, d, i, h)}
+                onMouseMove={(e) => handleMouseMove(e, d, i, h)}
+                onMouseLeave={() => setHovered(null)}
+              />
+              {/* Barra de color real */}
+              <rect
+                x={xPos}
+                y={yPos}
+                width={bw * 0.64}
+                height={barHeight}
+                fill={hovered?.label === d.label ? '#111111' : color}
+                rx="0.6"
+                className="pointer-events-none transition-colors duration-150"
+              />
+            </g>
+          );
+        })}
+      </svg>
+
+      {/* Tooltip flotante */}
+      {hovered && (
+        <div
+          className="absolute pointer-events-none z-20 border border-ink bg-white px-2 py-1 shadow-ink font-condensed text-[10px] font-black uppercase tracking-wider text-ink -translate-x-1/2 -translate-y-full transition-all duration-75"
+          style={{ left: hovered.x, top: hovered.y }}
+        >
+          <div className="text-gold">{hovered.label}</div>
+          <div className="font-semibold text-xs mt-0.5">{prefix}{hovered.value.toLocaleString()}{suffix}</div>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -107,17 +160,78 @@ export function BarLabels({ data }) {
 }
 
 // ---- Gráfica de línea SVG ----
-export function LineChart({ data, height = 200, color = '#111111', area = '#b8790522' }) {
+export function LineChart({ data, height = 200, color = '#111111', area = '#b8790522', prefix = '', suffix = '' }) {
+  const [hovered, setHovered] = useState(null);
   const max = Math.max(1, ...data.map((d) => d.value));
   const n = data.length;
   const pts = data.map((d, i) => [n <= 1 ? 0 : (i / (n - 1)) * 100, 50 - (d.value / max) * 44]);
   const line = pts.map((p, i) => `${i === 0 ? 'M' : 'L'}${p[0].toFixed(2)},${p[1].toFixed(2)}`).join(' ');
   const fill = `M0,50 ${pts.map((p) => `L${p[0].toFixed(2)},${p[1].toFixed(2)}`).join(' ')} L100,50 Z`;
+
+  const containerRef = useRef(null);
+
+  const handleMouseMove = (e, d, i, p) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = (p[0] / 100) * rect.width;
+    const y = (p[1] / 50) * rect.height - 10;
+    setHovered({ label: d.label, value: d.value, x, y });
+  };
+
   return (
-    <svg viewBox="0 0 100 50" preserveAspectRatio="none" className="w-full" style={{ height }}>
-      <path d={fill} fill={area} />
-      <path d={line} fill="none" stroke={color} strokeWidth="0.8" vectorEffect="non-scaling-stroke" />
-    </svg>
+    <div ref={containerRef} className="relative w-full">
+      <svg viewBox="0 0 100 50" preserveAspectRatio="none" className="w-full" style={{ height }}>
+        {/* Líneas de cuadrícula sutiles */}
+        <line x1="0" y1={50} x2="100" y2={50} stroke="rgba(17,17,17,0.12)" strokeWidth="0.25" />
+        <line x1="0" y1={28} x2="100" y2={28} stroke="rgba(17,17,17,0.06)" strokeWidth="0.25" strokeDasharray="1 1" />
+        <line x1="0" y1={6} x2="100" y2={6} stroke="rgba(17,17,17,0.06)" strokeWidth="0.25" strokeDasharray="1 1" />
+
+        <path d={fill} fill={area} />
+        <path d={line} fill="none" stroke={color} strokeWidth="0.8" vectorEffect="non-scaling-stroke" />
+
+        {/* Círculos / zonas interactivas */}
+        {pts.map((p, i) => {
+          const d = data[i];
+          return (
+            <g key={d.label + i}>
+              {/* Círculo indicador en hover */}
+              {hovered?.label === d.label && (
+                <circle
+                  cx={p[0]}
+                  cy={p[1]}
+                  r="1.2"
+                  fill="#b87905"
+                  stroke="#111111"
+                  strokeWidth="0.3"
+                />
+              )}
+              {/* Zona de hover invisible */}
+              <circle
+                cx={p[0]}
+                cy={p[1]}
+                r="6"
+                fill="transparent"
+                className="cursor-pointer"
+                onMouseEnter={(e) => handleMouseMove(e, d, i, p)}
+                onMouseMove={(e) => handleMouseMove(e, d, i, p)}
+                onMouseLeave={() => setHovered(null)}
+              />
+            </g>
+          );
+        })}
+      </svg>
+
+      {/* Tooltip flotante */}
+      {hovered && (
+        <div
+          className="absolute pointer-events-none z-20 border border-ink bg-white px-2 py-1 shadow-ink font-condensed text-[10px] font-black uppercase tracking-wider text-ink -translate-x-1/2 -translate-y-full transition-all duration-75"
+          style={{ left: hovered.x, top: hovered.y }}
+        >
+          <div className="text-gold">{hovered.label}</div>
+          <div className="font-semibold text-xs mt-0.5">{prefix}{hovered.value.toLocaleString()}{suffix}</div>
+        </div>
+      )}
+    </div>
   );
 }
 
