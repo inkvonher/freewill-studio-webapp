@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { Plus, Pencil, Trash2, ExternalLink, Loader2 } from 'lucide-react';
 import useCollection from '../useCollection.js';
 import { Badge, Field, Modal, PROJECT_STATUS, inputCls, money } from '../ui.jsx';
+import { useAuth } from '../AuthContext.jsx';
 
 const TYPES = ['Landing Page', 'Página Web Profesional', 'Web App con Reservas', 'Ecommerce', 'Sistema Interno', 'App Web Personalizada'];
 const empty = { name: '', client: '', type: TYPES[0], status: 'espera', price: '', currency: 'MXN', url: '', started_at: '', delivered_at: '', notes: '' };
 
 export default function Projects() {
   const { rows, loading, insert, update, remove } = useCollection('projects');
+  const { showToast } = useAuth();
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState(empty);
   const [editing, setEditing] = useState(null);
@@ -28,7 +30,17 @@ export default function Projects() {
       price: form.price === '' ? 0 : Number(form.price), currency: form.currency, url: form.url || null,
       notes: form.notes || null, started_at: form.started_at || null, delivered_at: form.delivered_at || null,
     };
-    if (editing) await update(editing, payload); else await insert(payload);
+    let err;
+    if (editing) {
+      err = await update(editing, payload);
+      if (!err) showToast('Proyecto actualizado con éxito.');
+    } else {
+      err = await insert(payload);
+      if (!err) showToast('Proyecto creado con éxito.');
+    }
+    if (err) {
+      showToast(`Error al guardar: ${err.message}`, 'error');
+    }
     setBusy(false); setOpen(false);
   };
 
@@ -73,7 +85,7 @@ export default function Projects() {
                   <td className="p-3">
                     <div className="flex justify-end gap-1">
                       <button onClick={() => openEdit(p)} className="p-1.5 text-ink/[0.55] hover:text-gold"><Pencil size={15} /></button>
-                      <button onClick={() => window.confirm('¿Eliminar este proyecto?') && remove(p.id)} className="p-1.5 text-ink/[0.55] hover:text-red-600"><Trash2 size={15} /></button>
+                      <button onClick={async () => { if (window.confirm('¿Eliminar este proyecto?')) { const err = await remove(p.id); if (!err) showToast('Proyecto eliminado.'); else showToast(err.message, 'error'); } }} className="p-1.5 text-ink/[0.55] hover:text-red-600"><Trash2 size={15} /></button>
                     </div>
                   </td>
                 </tr>

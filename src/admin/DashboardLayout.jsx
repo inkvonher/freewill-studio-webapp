@@ -2,6 +2,7 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, FolderKanban, Users, Wallet, BarChart3, ClipboardList, LogOut, ExternalLink } from 'lucide-react';
 import { useAuth } from './AuthContext.jsx';
 import logoOjo from '../assets/logo-ojo.png';
+import { Toast } from './ui.jsx';
 
 const nav = [
   ['/admin', 'Resumen', LayoutDashboard, true],
@@ -13,7 +14,7 @@ const nav = [
 ];
 
 export default function DashboardLayout() {
-  const { signOut, session } = useAuth();
+  const { signOut, session, toast, clearToast } = useAuth();
   const navigate = useNavigate();
 
   const logout = async () => {
@@ -69,6 +70,7 @@ export default function DashboardLayout() {
           <Outlet />
         </div>
       </main>
+      {toast && <Toast message={toast.message} type={toast.type} onClose={clearToast} />}
     </div>
   );
 }

@@ -120,3 +120,23 @@ export function LineChart({ data, height = 200, color = '#111111', area = '#b879
     </svg>
   );
 }
+
+// ---- Componente de Notificación Flotante (Toast) ----
+export function Toast({ message, type = 'success', onClose }) {
+  useEffect(() => {
+    const timer = setTimeout(onClose, 3600);
+    return () => clearTimeout(timer);
+  }, [onClose]);
+
+  const isError = type === 'error';
+  const borderCol = isError ? 'border-red-500' : 'border-gold';
+  const bgCol = isError ? 'bg-red-50' : 'bg-white';
+  const textCol = isError ? 'text-red-950' : 'text-ink';
+
+  return (
+    <div className={`fixed bottom-5 right-5 z-[100] flex items-center justify-between gap-5 border border-ink p-4 shadow-ink min-w-[260px] max-w-sm ${bgCol} ${borderCol} ${textCol} transition duration-300`}>
+      <span className="font-condensed text-xs font-black uppercase tracking-[0.14em]">{message}</span>
+      <button onClick={onClose} className="text-ink/[0.45] hover:text-gold text-sm font-black uppercase" aria-label="Cerrar notificación">×</button>
+    </div>
+  );
+}

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Archive, Download, FileJson, FileText, FolderPlus, Loader2, Package, Trash2, MessageCircle, UserPlus, ChevronDown } from 'lucide-react';
 import useCollection from '../useCollection.js';
 import { Badge, Modal } from '../ui.jsx';
+import { useAuth } from '../AuthContext.jsx';
 import {
   BRIEF_STATUS,
   clean,
@@ -35,6 +36,7 @@ export default function Briefs() {
   const { rows, loading, update, remove } = useCollection('briefs');
   const { insert: insertProject } = useCollection('projects');
   const { insert: insertLead } = useCollection('leads');
+  const { showToast } = useAuth();
   const [open, setOpen] = useState(null);
   const [activeTab, setActiveTab] = useState('brief');
   const [busyId, setBusyId] = useState('');
@@ -74,9 +76,10 @@ export default function Briefs() {
 
     if (!err) {
       if (brief.status === 'nuevo') await update(brief.id, { status: 'revisado' });
+      showToast('Prospecto creado con éxito.');
       setOpen(null);
     } else {
-      window.alert(`No se pudo crear el prospecto: ${err.message}`);
+      showToast(`No se pudo crear el prospecto: ${err.message}`, 'error');
     }
     setBusyId('');
   };
@@ -101,9 +104,10 @@ export default function Briefs() {
 
     if (!err) {
       await update(brief.id, { status: 'revisado' });
+      showToast('Proyecto creado con éxito.');
       setOpen(null);
     } else {
-      window.alert(`No se pudo crear el proyecto: ${err.message}`);
+      showToast(`No se pudo crear el proyecto: ${err.message}`, 'error');
     }
     setBusyId('');
   };
@@ -163,7 +167,7 @@ export default function Briefs() {
                       <button onClick={() => createLeadFromBrief(b)} disabled={busyId === b.id} className="p-1.5 text-ink/[0.55] hover:text-gold disabled:opacity-40" title="Crear prospecto"><UserPlus size={15} /></button>
                       <button onClick={() => createProjectFromBrief(b)} disabled={busyId === b.id} className="p-1.5 text-ink/[0.55] hover:text-gold disabled:opacity-40" title="Crear proyecto"><FolderPlus size={15} /></button>
                       {b.whatsapp && <a href={`https://wa.me/${b.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noreferrer" className="p-1.5 text-ink/[0.55] hover:text-green-600"><MessageCircle size={15} /></a>}
-                      <button onClick={() => window.confirm('¿Eliminar este cuestionario?') && remove(b.id)} className="p-1.5 text-ink/[0.55] hover:text-red-600"><Trash2 size={15} /></button>
+                      <button onClick={async () => { if (window.confirm('¿Eliminar este cuestionario?')) { const err = await remove(b.id); if (!err) showToast('Cuestionario eliminado.'); else showToast(err.message, 'error'); } }} className="p-1.5 text-ink/[0.55] hover:text-red-600"><Trash2 size={15} /></button>
                     </div>
                   </td>
                 </tr>

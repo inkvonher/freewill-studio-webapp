@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Plus, Pencil, Trash2, MessageCircle, FolderPlus, Loader2 } from 'lucide-react';
 import useCollection from '../useCollection.js';
 import { Badge, Field, Modal, LEAD_STATUS, inputCls } from '../ui.jsx';
+import { useAuth } from '../AuthContext.jsx';
 
 const TYPES = ['Barbería', 'Estudio de tatuajes', 'Otro'];
 const empty = { business: '', type: TYPES[0], phone: '', instagram: '', status: 'pendiente', last_contact: '', notes: '' };
@@ -9,6 +10,7 @@ const empty = { business: '', type: TYPES[0], phone: '', instagram: '', status: 
 export default function Leads() {
   const { rows, loading, insert, update, remove } = useCollection('leads');
   const { insert: insertProject } = useCollection('projects');
+  const { showToast } = useAuth();
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState(empty);
   const [editing, setEditing] = useState(null);
@@ -35,9 +37,9 @@ export default function Leads() {
 
     if (!err) {
       await update(lead.id, { status: 'cliente' });
-      window.alert(`¡Proyecto creado con éxito! El estado del prospecto cambió a "Cliente".`);
+      showToast('¡Proyecto creado con éxito! Estado de prospecto actualizado.');
     } else {
-      window.alert(`No se pudo crear el proyecto: ${err.message}`);
+      showToast(`No se pudo crear el proyecto: ${err.message}`, 'error');
     }
     setBusyId('');
   };
@@ -50,7 +52,18 @@ export default function Leads() {
     e.preventDefault();
     setBusy(true);
     const payload = { business: form.business, type: form.type, phone: form.phone || null, instagram: form.instagram || null, status: form.status, last_contact: form.last_contact || null, notes: form.notes || null };
-    if (editing) await update(editing, payload); else await insert(payload);
+    
+    let err;
+    if (editing) {
+      err = await update(editing, payload);
+      if (!err) showToast('Prospecto actualizado con éxito.');
+    } else {
+      err = await insert(payload);
+      if (!err) showToast('Prospecto creado con éxito.');
+    }
+    if (err) {
+      showToast(`Error al guardar: ${err.message}`, 'error');
+    }
     setBusy(false); setOpen(false);
   };
 
@@ -104,7 +117,7 @@ export default function Leads() {
                         </button>
                       )}
                       <button onClick={() => openEdit(l)} className="p-1.5 text-ink/[0.55] hover:text-gold"><Pencil size={15} /></button>
-                      <button onClick={() => window.confirm('¿Eliminar este prospecto?') && remove(l.id)} className="p-1.5 text-ink/[0.55] hover:text-red-600"><Trash2 size={15} /></button>
+                      <button onClick={async () => { if (window.confirm('¿Eliminar este prospecto?')) { const err = await remove(l.id); if (!err) showToast('Prospecto eliminado.'); else showToast(err.message, 'error'); } }} className="p-1.5 text-ink/[0.55] hover:text-red-600"><Trash2 size={15} /></button>
                     </div>
                   </td>
                 </tr>

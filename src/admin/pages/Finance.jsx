@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { Plus, Trash2, Loader2 } from 'lucide-react';
 import useCollection from '../useCollection.js';
 import { Field, Modal, Stat, Card, LineChart, inputCls, money } from '../ui.jsx';
+import { useAuth } from '../AuthContext.jsx';
 
 const empty = { concept: '', amount: '', currency: 'MXN', paid_at: new Date().toISOString().slice(0, 10), project_id: '' };
 const MONTHS = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
@@ -9,6 +10,7 @@ const MONTHS = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', '
 export default function Finance() {
   const { rows, loading, insert, remove } = useCollection('payments', { column: 'paid_at', ascending: false });
   const { rows: projects } = useCollection('projects');
+  const { showToast } = useAuth();
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState(empty);
   const [busy, setBusy] = useState(false);
@@ -25,7 +27,12 @@ export default function Finance() {
   const save = async (e) => {
     e.preventDefault();
     setBusy(true);
-    await insert({ concept: form.concept || null, amount: Number(form.amount) || 0, currency: form.currency, paid_at: form.paid_at, project_id: form.project_id || null });
+    const err = await insert({ concept: form.concept || null, amount: Number(form.amount) || 0, currency: form.currency, paid_at: form.paid_at, project_id: form.project_id || null });
+    if (!err) {
+      showToast('Pago registrado con éxito.');
+    } else {
+      showToast(`Error al registrar pago: ${err.message}`, 'error');
+    }
     setBusy(false); setOpen(false); setForm(empty);
   };
 
@@ -119,7 +126,7 @@ export default function Finance() {
                     </td>
                     <td className="p-3 text-right font-semibold tabular-nums">{money(r.amount, r.currency)}</td>
                     <td className="p-3 text-right">
-                      <button onClick={() => window.confirm('¿Eliminar pago?') && remove(r.id)} className="p-1.5 text-ink/[0.55] hover:text-red-600">
+                      <button onClick={async () => { if (window.confirm('¿Eliminar pago?')) { const err = await remove(r.id); if (!err) showToast('Pago eliminado.'); else showToast(err.message, 'error'); } }} className="p-1.5 text-ink/[0.55] hover:text-red-600">
                         <Trash2 size={15} />
                       </button>
                     </td>
