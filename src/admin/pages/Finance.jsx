@@ -12,6 +12,14 @@ export default function Finance() {
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState(empty);
   const [busy, setBusy] = useState(false);
+  const [filterProjectId, setFilterProjectId] = useState('');
+
+  const projectMap = useMemo(() => new Map(projects.map((p) => [p.id, p])), [projects]);
+
+  const filteredRows = useMemo(() => {
+    if (!filterProjectId) return rows;
+    return rows.filter((r) => r.project_id === filterProjectId);
+  }, [rows, filterProjectId]);
 
   const change = (e) => setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
   const save = async (e) => {
@@ -62,27 +70,62 @@ export default function Finance() {
         <div className="mt-1 flex">{chart.map((c, i) => <span key={i} className="flex-1 text-center text-[10px] text-ink/[0.5]">{c.label}</span>)}</div>
       </Card>
 
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <p className="font-condensed text-sm font-black uppercase tracking-[0.14em] text-ink/[0.55]">Listado de cobros</p>
+        {projects.length > 0 && (
+          <label className="flex items-center gap-2 font-condensed text-xs font-black uppercase tracking-[0.12em] text-ink/[0.5]">
+            Filtrar por proyecto:
+            <select
+              value={filterProjectId}
+              onChange={(e) => setFilterProjectId(e.target.value)}
+              className="border border-ink/[0.25] bg-white px-2 py-1 text-xs outline-none focus:border-gold"
+            >
+              <option value="">Todos</option>
+              {projects.map((p) => (
+                <option key={p.id} value={p.id}>{p.name}</option>
+              ))}
+            </select>
+          </label>
+        )}
+      </div>
+
       {loading ? (
         <div className="flex justify-center py-10 text-ink/[0.4]"><Loader2 className="animate-spin" /></div>
-      ) : rows.length === 0 ? (
-        <p className="border border-dashed border-ink/[0.25] bg-white p-8 text-center text-sm text-ink/[0.5]">Aún no hay pagos registrados.</p>
+      ) : filteredRows.length === 0 ? (
+        <p className="border border-dashed border-ink/[0.25] bg-white p-8 text-center text-sm text-ink/[0.5]">
+          {rows.length === 0 ? 'Aún no hay pagos registrados.' : 'No hay pagos registrados para este proyecto.'}
+        </p>
       ) : (
         <div className="overflow-x-auto border border-ink/[0.12] bg-white">
           <table className="w-full min-w-[560px] text-sm">
             <thead>
               <tr className="border-b border-ink/[0.12] text-left font-condensed text-xs font-black uppercase tracking-[0.12em] text-ink/[0.5]">
-                <th className="p-3">Fecha</th><th className="p-3">Concepto</th><th className="p-3 text-right">Monto</th><th className="p-3"></th>
+                <th className="p-3">Fecha</th><th className="p-3">Concepto / Proyecto</th><th className="p-3 text-right">Monto</th><th className="p-3"></th>
               </tr>
             </thead>
             <tbody>
-              {rows.map((r) => (
-                <tr key={r.id} className="border-b border-ink/[0.07] last:border-0 hover:bg-paper">
-                  <td className="p-3 tabular-nums text-ink/[0.7]">{r.paid_at}</td>
-                  <td className="p-3">{r.concept || '—'}</td>
-                  <td className="p-3 text-right font-semibold tabular-nums">{money(r.amount, r.currency)}</td>
-                  <td className="p-3 text-right"><button onClick={() => window.confirm('¿Eliminar pago?') && remove(r.id)} className="p-1.5 text-ink/[0.55] hover:text-red-600"><Trash2 size={15} /></button></td>
-                </tr>
-              ))}
+              {filteredRows.map((r) => {
+                const p = projectMap.get(r.project_id);
+                return (
+                  <tr key={r.id} className="border-b border-ink/[0.07] last:border-0 hover:bg-paper">
+                    <td className="p-3 tabular-nums text-ink/[0.7]">{r.paid_at}</td>
+                    <td className="p-3">
+                      <span className="font-semibold text-ink">{r.concept || '—'}</span>
+                      {p && (
+                        <div className="text-xs font-normal text-gold mt-0.5">
+                          {p.name}
+                        </div>
+                      )}
+                    </td>
+                    <td className="p-3 text-right font-semibold tabular-nums">{money(r.amount, r.currency)}</td>
+                    <td className="p-3 text-right">
+                      <button onClick={() => window.confirm('¿Eliminar pago?') && remove(r.id)} className="p-1.5 text-ink/[0.55] hover:text-red-600">
+                        <Trash2 size={15} />
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
