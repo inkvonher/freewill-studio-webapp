@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import studioLogo from '../assets/freewill-studio-logo.png';
-import videoHero from '../assets/videoHERO.mp4';
+import HeroVideo from './HeroVideo.jsx';
 import DecodeHeading from './DecodeHeading.jsx';
 import Magnetic from './Magnetic.jsx';
 import LangToggle from './LangToggle.jsx';
@@ -77,25 +77,11 @@ export default function Hero() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.28, duration: 1.05, ease: [0.16, 1, 0.3, 1] }}
         >
-          <div className="relative mx-auto w-full max-w-[480px] flex items-center justify-center">
-            {/* Sutil halo ambiental */}
-            <div className="pointer-events-none absolute -inset-6 rounded-full bg-gold/10 blur-3xl" />
-
-            {/* Video hero sin marco, con difuminado suave en los bordes y fusión con el fondo */}
-            <div className="relative w-full [mask-image:radial-gradient(ellipse_86%_88%_at_50%_50%,#000_68%,transparent_100%)] [webkit-mask-image:radial-gradient(ellipse_86%_88%_at_50%_50%,#000_68%,transparent_100%)]">
-              <video
-                src={videoHero}
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="w-full h-auto max-h-[760px] object-contain mix-blend-multiply contrast-[1.04]"
-              />
-            </div>
-          </div>
+          <HeroVideo />
         </motion.section>
       </div>
     </header>
   );
 }
+
 
