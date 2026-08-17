@@ -62,14 +62,14 @@ export default function HeroVideo() {
   }, []);
 
   return (
-    <div className="relative mx-auto flex w-full max-w-[460px] items-center justify-center select-none">
+    <div className="relative mx-auto flex w-full max-w-[340px] sm:max-w-[420px] md:max-w-[460px] items-center justify-center select-none">
       {/* Neblina y halo orgánico tipo humo detrás */}
       <div className="pointer-events-none absolute -inset-10 rounded-full bg-gradient-to-tr from-gold/15 via-[#f7f4ed]/70 to-gold/10 blur-3xl opacity-85" />
       <div className="pointer-events-none absolute -inset-8 rounded-full bg-[#f7f4ed] blur-2xl opacity-75" />
 
       {/* Contenedor del video con máscara difuminada multi-capa estilo humo orgánico */}
       <div
-        className="relative aspect-[9/16] w-full max-h-[740px] overflow-visible"
+        className="relative aspect-[9/16] w-full max-h-[640px] sm:max-h-[720px] overflow-visible"
         style={{
           maskImage: `
             radial-gradient(ellipse 64% 70% at 50% 50%, rgba(0,0,0,1) 18%, rgba(0,0,0,0.92) 34%, rgba(0,0,0,0.65) 50%, rgba(0,0,0,0.30) 66%, rgba(0,0,0,0.06) 80%, rgba(0,0,0,0) 100%),

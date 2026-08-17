@@ -96,12 +96,15 @@ export default function App() {
       <div className="relative z-10">
         <Hero />
 
-        <div className="overflow-hidden border-y border-ink bg-gold py-2 text-ink">
-          <div className="ticker-track flex w-max gap-6 font-condensed text-sm font-black uppercase tracking-[0.2em]">
-            {Array.from({ length: 2 }).map((_, group) => (
-              <div key={group} className="flex gap-6">
+        <div className="relative z-20 my-0 overflow-hidden border-y border-ink bg-gold py-2.5 text-ink select-none shadow-[0_4px_20px_rgba(184,121,5,0.15)]">
+          <div className="ticker-track flex w-max font-condensed text-xs sm:text-sm font-black uppercase tracking-[0.2em]">
+            {Array.from({ length: 4 }).map((_, group) => (
+              <div key={group} className="flex shrink-0 items-center gap-6 pr-6">
                 {['FREEWILL.STUDIO', 'WEB APPS', 'AUTOMATIZACIÓN', 'DISEÑO CONSCIENTE', 'TECNOLOGÍA CON PROPÓSITO'].map((item) => (
-                  <span key={`${group}-${item}`}>{item}</span>
+                  <span key={`${group}-${item}`} className="inline-flex items-center gap-6">
+                    <span>{item}</span>
+                    <span className="h-1.5 w-1.5 rounded-full bg-ink" />
+                  </span>
                 ))}
               </div>
             ))}
