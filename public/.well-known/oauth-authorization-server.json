@@ -27,6 +27,11 @@
   "agent_auth": {
     "skill": "https://www.freewillstudiotech.com/auth.md",
     "register_uri": "https://www.freewillstudiotech.com/oauth/register",
+    "claim_uri": "https://www.freewillstudiotech.com/oauth/claim",
+    "revocation_uri": "https://www.freewillstudiotech.com/oauth/revoke",
+    "events_supported": [
+      "revocation"
+    ],
     "identity_types_supported": [
       "anonymous",
       "identity_assertion"

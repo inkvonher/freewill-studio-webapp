@@ -4,6 +4,24 @@
   "description": "AI agent for discovering services, submitting project briefs, and interacting with FREEWILL.STUDIO.",
   "version": "1.0.0",
   "url": "https://www.freewillstudiotech.com",
+  "supportedInterfaces": [
+    {
+      "interface": "a2a",
+      "url": "https://www.freewillstudiotech.com/api/agent"
+    }
+  ],
+  "skills": [
+    {
+      "id": "freewill-studio-overview",
+      "name": "FREEWILL.STUDIO Overview",
+      "description": "Overview of FREEWILL.STUDIO digital agency capabilities, services, and tech stack."
+    },
+    {
+      "id": "project-brief-submission",
+      "name": "Project Brief Submission",
+      "description": "Submit a project brief questionnaire for new web applications or websites."
+    }
+  ],
   "capabilities": {
     "streaming": false,
     "pushNotifications": false
