@@ -1,7 +1,6 @@
 {
-  "resource": "https://freewillstudiotech.com",
+  "resource": "https://www.freewillstudiotech.com",
   "authorization_servers": [
-    "https://freewillstudiotech.com",
     "https://www.freewillstudiotech.com"
   ],
   "scopes_supported": [
@@ -13,5 +12,5 @@
   "bearer_methods_supported": [
     "header"
   ],
-  "resource_documentation": "https://freewillstudiotech.com/docs/api"
+  "resource_documentation": "https://www.freewillstudiotech.com/docs/api"
 }

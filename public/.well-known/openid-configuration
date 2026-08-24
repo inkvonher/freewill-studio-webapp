@@ -1,9 +1,9 @@
 {
-  "issuer": "https://freewillstudiotech.com",
-  "authorization_endpoint": "https://freewillstudiotech.com/oauth/authorize",
-  "token_endpoint": "https://freewillstudiotech.com/oauth/token",
-  "jwks_uri": "https://freewillstudiotech.com/.well-known/jwks.json",
-  "registration_endpoint": "https://freewillstudiotech.com/oauth/register",
+  "issuer": "https://www.freewillstudiotech.com",
+  "authorization_endpoint": "https://www.freewillstudiotech.com/oauth/authorize",
+  "token_endpoint": "https://www.freewillstudiotech.com/oauth/token",
+  "jwks_uri": "https://www.freewillstudiotech.com/.well-known/jwks.json",
+  "registration_endpoint": "https://www.freewillstudiotech.com/oauth/register",
   "response_types_supported": ["code", "token"],
   "grant_types_supported": [
     "authorization_code",
@@ -25,22 +25,31 @@
     "project:read"
   ],
   "agent_auth": {
-    "skill": "https://freewillstudiotech.com/.well-known/agent-skills/auth/SKILL.md",
-    "register_uri": "https://freewillstudiotech.com/oauth/register",
-    "identity_types_supported": ["anonymous", "identity_assertion"],
+    "skill": "https://www.freewillstudiotech.com/auth.md",
+    "register_uri": "https://www.freewillstudiotech.com/oauth/register",
+    "identity_types_supported": [
+      "anonymous",
+      "identity_assertion"
+    ],
     "anonymous": {
-      "credential_types_supported": ["bearer_token"],
-      "claim_uri": "https://freewillstudiotech.com/oauth/claim"
+      "credential_types_supported": [
+        "bearer_token"
+      ],
+      "claim_uri": "https://www.freewillstudiotech.com/oauth/claim"
     },
     "identity_assertion": {
       "assertion_types_supported": [
         "urn:ietf:params:oauth:token-type:id-jag",
         "verified_email"
       ],
-      "credential_types_supported": ["bearer_token"],
-      "claim_uri": "https://freewillstudiotech.com/oauth/claim",
-      "revocation_uri": "https://freewillstudiotech.com/oauth/revoke",
-      "events_supported": ["revocation"]
+      "credential_types_supported": [
+        "bearer_token"
+      ],
+      "claim_uri": "https://www.freewillstudiotech.com/oauth/claim",
+      "revocation_uri": "https://www.freewillstudiotech.com/oauth/revoke",
+      "events_supported": [
+        "revocation"
+      ]
     }
   }
 }

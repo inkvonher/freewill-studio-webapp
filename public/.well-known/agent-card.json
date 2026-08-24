@@ -1,0 +1,14 @@
+{
+  "$schema": "https://schemas.a2a.dev/v1/agent-card.json",
+  "name": "FREEWILL.STUDIO Agent",
+  "description": "AI agent for discovering services, submitting project briefs, and interacting with FREEWILL.STUDIO.",
+  "version": "1.0.0",
+  "url": "https://www.freewillstudiotech.com",
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false
+  },
+  "endpoints": {
+    "a2a": "https://www.freewillstudiotech.com/api/agent"
+  }
+}
