@@ -39,7 +39,8 @@
       ],
       "credential_types_supported": ["bearer_token"],
       "claim_uri": "https://freewillstudiotech.com/oauth/claim",
-      "revocation_uri": "https://freewillstudiotech.com/oauth/revoke"
+      "revocation_uri": "https://freewillstudiotech.com/oauth/revoke",
+      "events_supported": ["revocation"]
     }
   }
 }
