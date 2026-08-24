@@ -1,0 +1,25 @@
+{
+  "linkset": [
+    {
+      "anchor": "https://freewillstudiotech.com/api",
+      "service-desc": [
+        {
+          "href": "https://freewillstudiotech.com/.well-known/openapi.json",
+          "type": "application/openapi+json"
+        }
+      ],
+      "service-doc": [
+        {
+          "href": "https://freewillstudiotech.com/docs/api",
+          "type": "text/html"
+        }
+      ],
+      "status": [
+        {
+          "href": "https://freewillstudiotech.com/api/health",
+          "type": "application/json"
+        }
+      ]
+    }
+  ]
+}

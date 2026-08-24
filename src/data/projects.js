@@ -28,4 +28,12 @@ export const projects = [
     image: 'FC',
     url: 'https://www.cocinasdelmundofestival.com/',
   },
+  {
+    name: 'Déjà Vu Taquería',
+    type: 'Menú Digital y Sitio Web',
+    description: 'Sitio web moderno y menú digital interactivo para taquería gourmet, diseñado para atraer clientes y facilitar pedidos rápidos.',
+    image: 'DV',
+    url: 'https://dejavutaqueria.com/',
+  },
 ];
+

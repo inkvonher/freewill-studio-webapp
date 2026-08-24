@@ -1,0 +1,26 @@
+{
+  "$schema": "https://schemas.agentskills.io/discovery/0.2.0/schema.json",
+  "skills": [
+    {
+      "name": "freewill-studio-overview",
+      "type": "skill-md",
+      "description": "Comprehensive overview of FREEWILL.STUDIO digital web app and branding agency services, capabilities, and consultation process.",
+      "url": "https://freewillstudiotech.com/.well-known/agent-skills/freewill-studio/SKILL.md",
+      "digest": "sha256:3e55cc81c5a59c2947d51121b4762ed615d315340980db555cf18055c1a2f5e7"
+    },
+    {
+      "name": "project-brief-submission",
+      "type": "skill-md",
+      "description": "Guide for discovering and submitting interactive project brief questionnaires to scope new web development projects with FREEWILL.STUDIO.",
+      "url": "https://freewillstudiotech.com/.well-known/agent-skills/project-brief/SKILL.md",
+      "digest": "sha256:698559b3f39ff9a5bd9a93aece3d8cb8e3e989f111ed6ef84d429dea53bf1978"
+    },
+    {
+      "name": "agent-auth",
+      "type": "skill-md",
+      "description": "Instructions for AI agents to authenticate and register with FREEWILL.STUDIO APIs and services.",
+      "url": "https://freewillstudiotech.com/.well-known/agent-skills/auth/SKILL.md",
+      "digest": "sha256:04b674d5d25379766413fa551a031a81b0512a9c25eff6679afd7d424487b62f"
+    }
+  ]
+}

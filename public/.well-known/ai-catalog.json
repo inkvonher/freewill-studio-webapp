@@ -1,0 +1,41 @@
+{
+  "specVersion": "1.0",
+  "host": {
+    "displayName": "FREEWILL.STUDIO",
+    "identifier": "did:web:freewillstudiotech.com"
+  },
+  "entries": [
+    {
+      "identifier": "urn:air:freewillstudiotech.com:server:mcp",
+      "displayName": "FREEWILL.STUDIO MCP Server",
+      "type": "application/mcp-server-card+json",
+      "url": "https://freewillstudiotech.com/.well-known/mcp/server-card.json",
+      "representativeQueries": [
+        "hire FREEWILL.STUDIO for web application development",
+        "estimate cost and timeline for custom software",
+        "submit project brief to FREEWILL.STUDIO"
+      ]
+    },
+    {
+      "identifier": "urn:air:freewillstudiotech.com:skills:discovery",
+      "displayName": "FREEWILL.STUDIO Agent Skills Discovery",
+      "type": "application/json",
+      "url": "https://freewillstudiotech.com/.well-known/agent-skills/index.json",
+      "representativeQueries": [
+        "what digital agency services does FREEWILL STUDIO provide",
+        "how to fill out a project inquiry questionnaire",
+        "web design and development capabilities"
+      ]
+    },
+    {
+      "identifier": "urn:air:freewillstudiotech.com:api:catalog",
+      "displayName": "FREEWILL.STUDIO API Catalog",
+      "type": "application/linkset+json",
+      "url": "https://freewillstudiotech.com/.well-known/api-catalog",
+      "representativeQueries": [
+        "FREEWILL STUDIO API endpoints and OpenAPI schema",
+        "REST API documentation for project submissions"
+      ]
+    }
+  ]
+}

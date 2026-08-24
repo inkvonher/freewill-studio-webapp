@@ -1,0 +1,66 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "FREEWILL.STUDIO Public API",
+    "version": "1.0.0",
+    "description": "Public API for submitting project briefs, inquiries, and retrieving studio capabilities."
+  },
+  "servers": [
+    {
+      "url": "https://freewillstudiotech.com/api",
+      "description": "Production Server"
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health check",
+        "operationId": "getHealth",
+        "responses": {
+          "200": {
+            "description": "Service is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "example": "ok" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/brief": {
+      "post": {
+        "summary": "Submit project brief",
+        "operationId": "submitBrief",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "email", "project_type"],
+                "properties": {
+                  "name": { "type": "string" },
+                  "email": { "type": "string", "format": "email" },
+                  "project_type": { "type": "string" },
+                  "budget": { "type": "string" },
+                  "description": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Brief created successfully"
+          }
+        }
+      }
+    }
+  }
+}

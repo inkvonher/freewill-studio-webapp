@@ -36,6 +36,14 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/favicon.svg" />
 
+    <!-- Agent Discovery (RFC 9727, ARD, MCP) -->
+    <link rel="api-catalog" href="/.well-known/api-catalog" />
+    <link rel="ai-catalog" href="/.well-known/ai-catalog.json" />
+    <link rel="service-desc" href="/.well-known/mcp/server-card.json" />
+    <link rel="service-doc" href="/.well-known/agent-skills/index.json" />
+    <link rel="oauth-protected-resource" href="/.well-known/oauth-protected-resource" />
+    <link rel="author" href="/auth.md" />
+
     <!-- Fuentes -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -43,6 +51,41 @@
       href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@500;700;800;900&family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <script>
+      (function() {
+        var tools = [
+          {
+            name: "get_studio_info",
+            description: "Retrieve FREEWILL.STUDIO digital agency capabilities, services, tech stack, and contact links.",
+            inputSchema: { type: "object", properties: { topic: { type: "string" } } },
+            execute: async function() { return { studio: "FREEWILL.STUDIO", domain: "freewillstudiotech.com", services: ["Web Apps", "High-Converting Websites", "Automations", "UI/UX"] }; }
+          },
+          {
+            name: "navigate_to_section",
+            description: "Navigate or scroll to specific sections on FREEWILL.STUDIO.",
+            inputSchema: { type: "object", required: ["target"], properties: { target: { type: "string" } } },
+            execute: async function(p) { return { status: "success", target: p.target }; }
+          },
+          {
+            name: "submit_project_brief",
+            description: "Submit a project brief questionnaire to FREEWILL.STUDIO.",
+            inputSchema: { type: "object", required: ["name", "email", "project_type"], properties: { name: { type: "string" }, email: { type: "string" }, project_type: { type: "string" } } },
+            execute: async function(p) { return { status: "received", briefUrl: "https://freewillstudiotech.com/cuestionario" }; }
+          }
+        ];
+        function reg() {
+          try {
+            var mc = navigator.modelContext || window.modelContext;
+            if (mc) {
+              if (typeof mc.provideContext === "function") mc.provideContext({ tools: tools });
+              if (typeof mc.registerTool === "function") tools.forEach(function(t) { try { mc.registerTool(t); } catch(e){} });
+            }
+          } catch(e){}
+        }
+        reg();
+        window.addEventListener("DOMContentLoaded", reg);
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

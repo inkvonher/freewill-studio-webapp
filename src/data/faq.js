@@ -18,7 +18,7 @@ export const faq = [
   },
   {
     q: '¿Incluye dominio y hosting?',
-    a: 'Te asesoramos para conseguir tu dominio y publicar el sitio. El hosting puede ser gratuito o de bajo costo según el tipo de proyecto.',
+    a: 'El dominio es gratis por un año y el hosting está incluido.',
   },
   {
     q: '¿Puedo pedir cambios durante el proceso?',

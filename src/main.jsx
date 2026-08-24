@@ -4,7 +4,10 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { LanguageProvider } from './i18n.jsx';
 import { AuthProvider } from './admin/AuthContext.jsx';
 import ProtectedRoute from './admin/ProtectedRoute.jsx';
+import { initWebMCP } from './lib/webmcp.js';
 import './styles.css';
+
+initWebMCP();
 
 const App = lazy(() => import('./App.jsx'));
 const Brief = lazy(() => import('./Brief.jsx'));

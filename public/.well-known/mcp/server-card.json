@@ -1,0 +1,23 @@
+{
+  "serverInfo": {
+    "name": "freewill-studio-mcp",
+    "version": "1.0.0",
+    "description": "Model Context Protocol server for FREEWILL.STUDIO digital web app and branding agency platform."
+  },
+  "transport": {
+    "type": "http",
+    "endpoint": "https://freewillstudiotech.com/mcp"
+  },
+  "capabilities": {
+    "tools": {
+      "listChanged": true
+    },
+    "resources": {
+      "subscribe": false,
+      "listChanged": true
+    },
+    "prompts": {
+      "listChanged": true
+    }
+  }
+}

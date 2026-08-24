@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alianza Estratégica · FREEWILL.STUDIO</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-color: #111111;
+      --card-bg: #1a1a1a;
+      --text-color: #f7f4ed;
+      --text-muted: rgba(247, 244, 237, 0.65);
+      --gold: #b87905;
+      --gold-glow: rgba(184, 121, 5, 0.25);
+      --border-color: rgba(247, 244, 237, 0.12);
+      --font-title: 'Outfit', sans-serif;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Layout general */
+    .app-container {
+      display: flex;
+      min-h: 100vh;
+      flex-direction: column;
+    }
+
+    header {
+      border-b: 1px solid var(--border-color);
+      padding: 1.5rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(17, 17, 17, 0.85);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand-logo {
+      font-family: var(--font-title);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      font-size: 1.25rem;
+    }
+
+    .brand-logo span {
+      color: var(--gold);
+    }
+
+    .meeting-tag {
+      font-family: var(--font-title);
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      border: 1px solid var(--gold);
+      padding: 0.35rem 0.75rem;
+      color: var(--gold);
+    }
+
+    /* Slider Container */
+    .slider-wrapper {
+      flex: 1;
+      max-width: 1000px;
+      width: 100%;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .slide {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      padding: 3rem;
+      min-height: 520px;
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .slide.active {
+      display: flex;
+      animation: fadeIn 0.4s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Esquinas decorativas estilo cyber */
+    .slide::before {
+      content: '';
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      width: 12px;
+      height: 12px;
+      border-top: 2px solid var(--gold);
+      border-left: 2px solid var(--gold);
+    }
+
+    .slide::after {
+      content: '';
+      position: absolute;
+      bottom: 1rem;
+      right: 1rem;
+      width: 12px;
+      height: 12px;
+      border-bottom: 2px solid var(--gold);
+      border-right: 2px solid var(--gold);
+    }
+
+    .slide-header {
+      margin-bottom: 2rem;
+    }
+
+    .slide-number {
+      font-family: var(--font-title);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    .slide-title {
+      font-family: var(--font-title);
+      font-size: 2.25rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+    }
+
+    .slide-content {
+      flex: 1;
+    }
+
+    .slide-content p {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Estilos de cuadrícula para contenido */
+    .content-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .content-card {
+      border: 1px dashed rgba(247, 244, 237, 0.15);
+      padding: 1.25rem;
+      background: rgba(255, 255, 255, 0.02);
+      transition: all 0.3s ease;
+    }
+
+    .content-card:hover {
+      border-color: var(--gold);
+      background: rgba(184, 121, 5, 0.04);
+    }
+
+    .content-card h4 {
+      font-family: var(--font-title);
+      font-size: 1.15rem;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .content-card ul {
+      list-style-type: square;
+      padding-left: 1.2rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .content-card li {
+      margin-bottom: 0.4rem;
+    }
+
+    /* Lista de preguntas */
+    .question-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .question-item {
+      display: flex;
+      gap: 1rem;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 1rem 1.25rem;
+      border-left: 3px solid var(--gold);
+    }
+
+    .question-num {
+      font-family: var(--font-title);
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    .question-text h4 {
+      font-family: var(--font-title);
+      font-size: 1.05rem;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+    }
+
+    .question-text p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    /* Controles de navegación */
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1.5rem;
+    }
+
+    .btn {
+      background: transparent;
+      border: 1px solid var(--text-color);
+      color: var(--text-color);
+      padding: 0.75rem 1.5rem;
+      font-family: var(--font-title);
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+      background: var(--text-color);
+      color: var(--bg-color);
+    }
+
+    .btn-gold {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    .btn-gold:hover {
+      background: var(--gold);
+      color: white;
+      box-shadow: 0 0 15px var(--gold-glow);
+    }
+
+    .btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .btn:disabled:hover {
+      background: transparent;
+      color: var(--text-color);
+    }
+
+    .dot-navigation {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(247, 244, 237, 0.2);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .dot.active {
+      background: var(--gold);
+      box-shadow: 0 0 8px var(--gold);
+      transform: scale(1.2);
+    }
+
+    /* Footer de reunión */
+    .slide-footer {
+      border-top: 1px dashed rgba(247, 244, 237, 0.1);
+      padding-top: 1.5rem;
+      margin-top: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* Print Styles (Para exportar a PDF de forma limpia con Cmd+P) */
+    @media print {
+      body {
+        background-color: #ffffff;
+        color: #111111;
+      }
+      
+      header, .controls, .dot-navigation {
+        display: none !important;
+      }
+
+      .slider-wrapper {
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
+      .slide {
+        display: flex !important;
+        page-break-after: always;
+        background: #ffffff;
+        color: #111111;
+        border: none;
+        border-bottom: 2px solid #111;
+        box-shadow: none;
+        padding: 2rem 0;
+        min-height: auto;
+      }
+
+      .slide::before, .slide::after {
+        display: none !important;
+      }
+
+      .slide-title {
+        color: #111111;
+        border-bottom: 2px solid var(--gold);
+        padding-bottom: 0.5rem;
+      }
+
+      .content-card {
+        border: 1px solid #ddd;
+        background: #f9f9f9;
+        color: #333;
+      }
+
+      .content-card h4, .slide-number, .question-num {
+        color: #8b5a00;
+      }
+
+      .question-item {
+        background: #f9f9f9;
+        border-left: 3px solid #8b5a00;
+        color: #333;
+      }
+
+      .slide-content p, .content-card ul, .question-text p, .slide-footer {
+        color: #444;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <header>
+      <div class="brand-logo">FREEWILL<span>.STUDIO</span></div>
+      <div class="meeting-tag">Alianza de Negocio</div>
+    </header>
+
+    <main class="slider-wrapper">
+      
+      <!-- Slide 1: Portada -->
+      <section class="slide active">
+        <div class="slide-header">
+          <span class="slide-number">Slide 01</span>
+          <h2 class="slide-title">Desarrollo + Redes:<br>El Próximo Nivel Digital</h2>
+        </div>
+        <div class="slide-content">
+          <p>Propuesta de alianza estratégica entre <strong>Desarrollo Web Premium</strong> y <strong>Estrategia de Redes Sociales (RRSS)</strong> para conformar una célula de crecimiento de alto valor.</p>
+          <div class="content-grid">
+            <div class="content-card">
+              <h4>El Problema del Mercado</h4>
+              <ul>
+                <li>Las marcas compran webs hermosas que nadie visita.</li>
+                <li>O pagan por redes sociales dinámicas que no logran cerrar ventas de forma automática.</li>
+              </ul>
+            </div>
+            <div class="content-card">
+              <h4>Nuestra Solución</h4>
+              <ul>
+                <li>Creamos un ecosistema completo: Redes sociales que <strong>atraen e interesan</strong>, y Web Apps que <strong>convierten y automatizan</strong>.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span>FREEWILL.STUDIO x Community Manager</span>
+          <span>Presiona "Siguiente" para continuar ➔</span>
+        </div>
+      </section>
+
+      <!-- Slide 2: El Modelo del Negocio -->
+      <section class="slide">
+        <div class="slide-header">
+          <span class="slide-number">Slide 02</span>
+          <h2 class="slide-title">Estructura del Ecosistema</h2>
+        </div>
+        <div class="slide-content">
+          <p>Dividimos el embudo comercial del cliente en dos áreas especializadas para garantizar la efectividad del proyecto.</p>
+          <div class="content-grid">
+            <div class="content-card">
+              <h4>1. Atracción (Tu Área · RRSS)</h4>
+              <ul>
+                <li>Estrategia de Reels, Carruseles y Stories.</li>
+                <li>Pauta publicitaria digital (Meta Ads).</li>
+                <li>Generar deseo y redirigir tráfico cualificado al enlace del perfil.</li>
+              </ul>
+            </div>
+            <div class="content-card">
+              <h4>2. Conversión (Mi Área · Dev)</h4>
+              <ul>
+                <li>Desarrollo de Web Apps y Menús Digitales rápidos.</li>
+                <li>Flujos de reserva automatizados (ej. WhatsApp).</li>
+                <li>Estructura premium sin comisiones ni rentas externas.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span>Enfoque: Resultados reales y medibles</span>
+          <span>FREEWILL.STUDIO</span>
+        </div>
+      </section>
+
+      <!-- Slide 3: Propuesta Comercial (Paquetes) -->
+      <section class="slide">
+        <div class="slide-header">
+          <span class="slide-number">Slide 03</span>
+          <h2 class="slide-title">Paquetes de Alto Valor</h2>
+        </div>
+        <div class="slide-content">
+          <p>Para elevar el ticket promedio, podemos empaquetar nuestros servicios. El cliente no compra "código" o "posts", compra un <strong>sistema de adquisición de clientes</strong>.</p>
+          <div class="content-grid">
+            <div class="content-card">
+              <h4>Paquete Launch</h4>
+              <ul>
+                <li>Landing Page rápida + Formulario.</li>
+                <li>Optimización de perfil de Instagram.</li>
+                <li>Diseño de las primeras 9 publicaciones del Feed.</li>
+                <li><strong>Ideal para:</strong> Profesionales o marcas personales.</li>
+              </ul>
+            </div>
+            <div class="content-card">
+              <h4>Paquete Scale</h4>
+              <ul>
+                <li>Web App con Reservas o Menú Digital.</li>
+                <li>Dominio y hosting incluidos (primer año).</li>
+                <li>Gestión mensual de contenido en RRSS.</li>
+                <li>Configuración de campaña básica de Meta Ads.</li>
+                <li><strong>Ideal para:</strong> Restaurantes y locales de servicios.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span>Estrategia: Cobro por valor + Iguala recurrente mensual</span>
+          <span>FREEWILL.STUDIO</span>
+        </div>
+      </section>
+
+      <!-- Slide 4: División de Roles y Dinero -->
+      <section class="slide">
+        <div class="slide-header">
+          <span class="slide-number">Slide 04</span>
+          <h2 class="slide-title">División de Roles y Finanzas</h2>
+        </div>
+        <div class="slide-content">
+          <p>Transparencia y claridad en la operación diaria y la división de los ingresos de los proyectos conjuntos.</p>
+          <div class="content-grid">
+            <div class="content-card">
+              <h4>Responsabilidades</h4>
+              <ul>
+                <li><strong>Socio Dev (Tú):</strong> Servidores, código, bases de datos (Supabase), diseño de interfaces, soporte y mantenimiento técnico de los sitios.</li>
+                <li><strong>Socio RRSS (Ella):</strong> Parrilla de contenido, copys, grabación/guiones de Reels, configuración de pauta y contacto directo en redes.</li>
+              </ul>
+            </div>
+            <div class="content-card">
+              <h4>Modelo de Negocio Sugerido</h4>
+              <ul>
+                <li><strong>Proyectos Nuevos:</strong> Pago único. Reparto proporcional basado en la carga de trabajo de cada área (ej. 60/40 o 50/50 según alcances).</li>
+                <li><strong>Igualas Mensuales (Recurrentes):</strong> El cliente paga mes a mes por contenido y soporte. Garantiza estabilidad económica para ambos.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span>Alianza basada en la equidad y el crecimiento mutuo</span>
+          <span>FREEWILL.STUDIO</span>
+        </div>
+      </section>
+
+      <!-- Slide 5: Preguntas para la Reunión -->
+      <section class="slide">
+        <div class="slide-header">
+          <span class="slide-number">Slide 05</span>
+          <h2 class="slide-title">Preguntas para Evaluar Alineación</h2>
+        </div>
+        <div class="slide-content">
+          <p>Usa estas preguntas durante la conversación para conocer su visión de negocio y detectar si están en el mismo canal.</p>
+          <div class="question-list">
+            <div class="question-item">
+              <span class="question-num">1</span>
+              <div class="question-text">
+                <h4>¿Cuál es tu proyección profesional a 1 y 3 años?</h4>
+                <p>Busca saber si quiere un empleo seguro o si le entusiasma construir una marca independiente/agencia.</p>
+              </div>
+            </div>
+            <div class="question-item">
+              <span class="question-num">2</span>
+              <div class="question-text">
+                <h4>¿Qué experiencia tienes configurando campañas de publicidad paga (Meta Ads)?</h4>
+                <p>Para escalar negocios locales (como restaurantes), el tráfico orgánico es lento. El dominio de anuncios pagados es un pilar crítico.</p>
+              </div>
+            </div>
+            <div class="question-item">
+              <span class="question-num">3</span>
+              <div class="question-text">
+                <h4>¿Cómo ves el trabajo con clientes de alto valor vs. bajo costo?</h4>
+                <p>Alinea si buscan vender barato y a volumen, o si prefieren enfocarse en servicios premium de ticket alto con pocos clientes.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span>Consejo: Escucha el 70% del tiempo y habla el 30% restante</span>
+          <span>FREEWILL.STUDIO</span>
+        </div>
+      </section>
+
+      <!-- Slide 6: Cierre -->
+      <section class="slide">
+        <div class="slide-header">
+          <span class="slide-number">Slide 06</span>
+          <h2 class="slide-title">Siguientes Pasos</h2>
+        </div>
+        <div class="slide-content">
+          <p>Si la reunión es exitosa y hay química profesional, definan los compromisos inmediatos para mantener el impulso.</p>
+          <div class="content-grid">
+            <div class="content-card">
+              <h4>1. Proyecto Piloto</h4>
+              <ul>
+                <li>Elegir un cliente de prueba (o usar uno de tu portafolio actual) para armar una propuesta en conjunto y ver cómo se coordinan trabajando.</li>
+              </ul>
+            </div>
+            <div class="content-card">
+              <h4>2. Branding e Instagram</h4>
+              <ul>
+                <li>Comenzar a optimizar nuestra cuenta <strong>@freewill.studio.tech</strong> con los materiales gráficos y publicaciones base.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <span>Diseño Consciente · Tecnología con Propósito</span>
+          <span>FREEWILL.STUDIO</span>
+        </div>
+      </section>
+
+      <!-- Controles inferiores -->
+      <div class="controls">
+        <button class="btn" id="prevBtn" disabled>Anterior</button>
+        <div class="dot-navigation" id="dotsContainer">
+          <!-- Dots generados por JS -->
+        </div>
+        <button class="btn btn-gold" id="nextBtn">Siguiente</button>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const dotsContainer = document.getElementById('dotsContainer');
+    
+    let currentSlide = 0;
+
+    // Generar dots indicadores
+    slides.forEach((_, index) => {
+      const dot = document.createElement('div');
+      dot.classList.add('dot');
+      if (index === 0) dot.classList.add('active');
+      dot.addEventListener('click', () => goToSlide(index));
+      dotsContainer.appendChild(dot);
+    });
+
+    const dots = document.querySelectorAll('.dot');
+
+    function updateControls() {
+      prevBtn.disabled = currentSlide === 0;
+      
+      if (currentSlide === slides.length - 1) {
+        nextBtn.textContent = 'Inicio';
+      } else {
+        nextBtn.textContent = 'Siguiente';
+      }
+
+      dots.forEach((dot, index) => {
+        dot.classList.toggle('active', index === currentSlide);
+      });
+    }
+
+    function goToSlide(index) {
+      slides[currentSlide].classList.remove('active');
+      currentSlide = index;
+      slides[currentSlide].classList.add('active');
+      updateControls();
+    }
+
+    prevBtn.addEventListener('click', () => {
+      if (currentSlide > 0) {
+        goToSlide(currentSlide - 1);
+      }
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (currentSlide < slides.length - 1) {
+        goToSlide(currentSlide + 1);
+      } else {
+        goToSlide(0); // Regresar al inicio
+      }
+    });
+  </script>
+</body>
+</html>
